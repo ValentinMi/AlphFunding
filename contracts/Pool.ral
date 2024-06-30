@@ -60,7 +60,7 @@ Contract Pool(
         let blockTimeStamp = blockTimeStamp!()
         assert!(blockTimeStamp >= end && totalCollected >= goal, ErrorCodes.CollectNotFinished)
 
-        transferTokenFromSelf!(owner, ALPH, totalCollected)
+        destroySelf!(owner)
     }
 
     // Allows to refund the contribution
