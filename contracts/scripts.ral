@@ -1,0 +1,16 @@
+TxScript Contribute(
+    pool: Pool,
+    amount: U256
+) {
+    pool.contribute{callerAddress!() -> ALPH: minimalContractDeposit!()}(amount)
+}
+
+TxScript Withdraw(
+    pool: Pool
+) {
+    pool.withdraw()
+}
+
+TxScript Refund(pool: Pool) {
+    pool.refund()
+}

@@ -1,0 +1,85 @@
+Contract Pool(
+    owner: Address,
+    end: U256,
+    goal: U256,
+    mut totalCollected: U256
+) {
+    
+    mapping[Address, U256] contributions
+
+    event Contribute(contributor: Address, amount: U256, totalCollected: U256)
+
+    enum ErrorCodes {
+        CollectIsFinished = 0
+        GoalAlreadyReached = 1
+        CollectNotFinished = 2
+        NotTheOwner = 3
+        NoContribution = 4
+        NotEnoughFunds = 5
+    }
+
+    pub fn getTotalCollected() -> U256 {
+        return totalCollected
+    }
+
+    pub fn getEnd() -> U256 {
+        return end
+    }
+
+    pub fn getGoal() -> U256 {
+        return goal
+    }
+
+    pub fn getOwner() -> Address {
+        return owner
+    }
+
+    // Allows to contribute to the pool
+    @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false, assetsInContract = true)
+    pub fn contribute(amount: U256) -> () {
+        let blockTimeStamp = blockTimeStamp!()
+        assert!(blockTimeStamp < end, ErrorCodes.CollectIsFinished)
+        assert!(amount > 0, ErrorCodes.NotEnoughFunds)
+
+        let caller = callerAddress!()
+        let key = caller
+
+        transferTokenToSelf!(caller, ALPH, amount)
+        contributions.insert!(caller, key, amount)
+        totalCollected = totalCollected + amount
+        
+        emit Contribute(caller, amount, totalCollected)
+    }
+
+    // Allows the owner to withdraw pool's gains
+    @using(assetsInContract = true)
+    pub fn withdraw() -> () {
+        let caller = callerAddress!()
+        checkCaller!(owner == caller, ErrorCodes.NotTheOwner)
+
+        let blockTimeStamp = blockTimeStamp!()
+        assert!(blockTimeStamp >= end && totalCollected >= goal, ErrorCodes.CollectNotFinished)
+
+        transferTokenFromSelf!(owner, ALPH, totalCollected)
+    }
+
+    // Allows to refund the contribution
+    @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
+    pub fn refund() -> () {
+        let blockTimeStamp = blockTimeStamp!()
+        assert!(blockTimeStamp < end, ErrorCodes.CollectIsFinished)
+        
+        assert!(totalCollected < goal, ErrorCodes.GoalAlreadyReached)
+        
+        let caller = callerAddress!()
+        assert!(contributions.contains!(caller), ErrorCodes.NoContribution)
+
+        let contributionAmount = contributions[caller]
+
+        contributions.remove!(caller, caller)
+        totalCollected = totalCollected - contributionAmount
+
+        transferTokenFromSelf!(caller, ALPH, contributionAmount)
+    }
+    
+}
