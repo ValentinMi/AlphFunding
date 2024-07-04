@@ -13,7 +13,8 @@ interface PoolProps {}
 export const Pool: React.FC<PoolProps> = () => {
   const [totalCollected, setTotalCollected] = useState<number>(0);
   const [end, setEnd] = useState<number>(null);
-  const [owner, setOwner] = useState<string>(null);
+  const [beneficiary, setBeneficiary] = useState<string>(null);
+  const [creator, setCreator] = useState<string>(null)
   const [goal, setGoal] = useState<number>(0);
   const [contributors, setContributors] = useState<Contributor[]>([]);
 
@@ -42,13 +43,16 @@ export const Pool: React.FC<PoolProps> = () => {
     data = await pool.view.getEnd();
     setEnd(bigIntToNumber(data.returns));
 
-    data = await pool.view.getOwner();
-    setOwner(data.returns);
+    data = await pool.view.getBeneficiary();
+    setBeneficiary(data.returns);
+
+    data = await pool.view.getCreator();
+    setCreator(data.returns);
 
     data = await pool.view.getGoal();
     setGoal(bigIntToNumber(data.returns));
 
-    const logs = await nodeProvider.events.getEventsContractContractaddress(
+    data = await nodeProvider.events.getEventsContractContractaddress(
       poolAddress,
       {
         start: 0,
@@ -56,7 +60,7 @@ export const Pool: React.FC<PoolProps> = () => {
     );
 
     setContributors(
-      logs.events.map((log) => ({
+      data.events.map((log) => ({
         address: log.fields[0].value as string,
         amount: log.fields[1].value as number,
       })),
@@ -75,7 +79,8 @@ export const Pool: React.FC<PoolProps> = () => {
         end={end}
         callContribute={callContribute}
         fetchContractData={fetchContractData}
-        owner={owner}
+        beneficiary={beneficiary}
+        creator={creator}
       />
       <Contributors contributors={contributors} />
     </Flex>

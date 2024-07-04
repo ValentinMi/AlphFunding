@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, StackDivider, Text, VStack } from "@chakra-ui/react";
+import { Box, Flex, StackDivider, Text, VStack } from "@chakra-ui/react";
 import { sliceAddress } from "../utils";
 import { Contributor } from "../types";
 
@@ -7,6 +7,14 @@ interface ContributorsProps {
   contributors: Contributor[];
 }
 export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
+  if (contributors.length === 0) {
+    return (
+      <Box w={"100%"} textAlign={"center"}>
+        <Text>No contributors yet</Text>
+      </Box>
+    );
+  }
+
   return (
     <VStack
       w={"50%"}

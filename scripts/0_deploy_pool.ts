@@ -1,7 +1,6 @@
-import { Deployer, DeployFunction, Network } from '@alephium/cli'
-import { Settings } from '../alephium.config'
-import { Pool } from '../artifacts/ts'
-import { ZERO_ADDRESS } from '@alephium/web3'
+import { Deployer, DeployFunction } from "@alephium/cli";
+import { Settings } from "../alephium.config";
+import { Pool } from "../artifacts/ts";
 
 // This deploy function will be called by cli deployment tool automatically
 // Note that deployment scripts should prefixed with numbers (starting from 0)
@@ -16,7 +15,8 @@ const deployPool: DeployFunction<Settings> = async (
     initialFields: {
         end: BigInt(Date.now() + 86400 * 100 * 7),
         goal: 10n,
-        owner: "19jG4CADXWwdaCntVn3qteRUVYmJQxqDHkqyUHERZKwWr",
+        creator: "19jG4CADXWwdaCntVn3qteRUVYmJQxqDHkqyUHERZKwWr",
+        beneficiary: "19jG4CADXWwdaCntVn3qteRUVYmJQxqDHkqyUHERZKwWr",
         totalCollected: 0n 
     }
   })

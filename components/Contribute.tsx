@@ -17,14 +17,15 @@ import {
   NumberInputStepper,
   Progress,
   Text,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import { SignExecuteScriptTxResult } from "@alephium/web3";
 
 interface ContributeProps {
   totalCollected: number;
   goal: number;
-  owner: string;
+  beneficiary: string;
+  creator: string;
   end: number;
   callContribute: (amount: number) => Promise<SignExecuteScriptTxResult>;
   fetchContractData: () => Promise<void>;
@@ -36,7 +37,9 @@ export const Contribute: React.FC<ContributeProps> = ({
   owner,
   end,
   callContribute,
-  fetchContractData,
+  beneficiary,
+  creator,
+  fetchContractData
 }) => {
   const isContributor = false;
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -45,8 +48,8 @@ export const Contribute: React.FC<ContributeProps> = ({
 
   const handleContribute = async (amount: number) => {
     await callContribute(amount);
-    onClose();
     await fetchContractData();
+    onClose();
   };
 
   return (
@@ -62,7 +65,16 @@ export const Contribute: React.FC<ContributeProps> = ({
             isExternal
             href={`https://explorer.alephium.org/addresses/${owner}`}
           >
-            {owner}
+            {beneficiary}
+          </Link>
+        </Text>
+        <Text>
+          Pool creator:{" "}
+          <Link
+            isExternal
+            href={`https://explorer.alephium.org/addresses/${owner}`}
+          >
+            {creator}
           </Link>
         </Text>
         <Flex justifyContent={"space-between"} w={"100%"} mt={2}>

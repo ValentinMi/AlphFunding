@@ -1,5 +1,6 @@
 Contract Pool(
-    owner: Address,
+    creator: Address,
+    beneficiary: Address,
     end: U256,
     goal: U256,
     mut totalCollected: U256
@@ -13,7 +14,7 @@ Contract Pool(
         CollectIsFinished = 0
         GoalAlreadyReached = 1
         CollectNotFinished = 2
-        NotTheOwner = 3
+        NotTheBeneficiary = 3
         NoContribution = 4
         NotEnoughFunds = 5
     }
@@ -30,9 +31,14 @@ Contract Pool(
         return goal
     }
 
-    pub fn getOwner() -> Address {
-        return owner
+    pub fn getBeneficiary() -> Address {
+        return beneficiary
     }
+
+    pub fn getCreator() -> Address {
+        return creator
+    }
+
 
     // Allows to contribute to the pool
     @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false, assetsInContract = true)
@@ -51,16 +57,16 @@ Contract Pool(
         emit Contribute(caller, amount, totalCollected)
     }
 
-    // Allows the owner to withdraw pool's gains
+    // Allows the beneficiary to withdraw pool's gains
     @using(assetsInContract = true)
     pub fn withdraw() -> () {
         let caller = callerAddress!()
-        checkCaller!(owner == caller, ErrorCodes.NotTheOwner)
+        checkCaller!(beneficiary == caller, ErrorCodes.NotTheBeneficiary)
 
         let blockTimeStamp = blockTimeStamp!()
         assert!(blockTimeStamp >= end && totalCollected >= goal, ErrorCodes.CollectNotFinished)
 
-        destroySelf!(owner)
+        destroySelf!(beneficiary)
     }
 
     // Allows to refund the contribution
