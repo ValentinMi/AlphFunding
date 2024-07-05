@@ -61,7 +61,7 @@ Contract Pool(
     @using(assetsInContract = true)
     pub fn withdraw() -> () {
         let caller = callerAddress!()
-        checkCaller!(beneficiary == caller, ErrorCodes.NotTheBeneficiary)
+        checkCaller!(caller == beneficiary || caller == creator, ErrorCodes.NotTheBeneficiary)
 
         let blockTimeStamp = blockTimeStamp!()
         assert!(blockTimeStamp >= end && totalCollected >= goal, ErrorCodes.CollectNotFinished)
