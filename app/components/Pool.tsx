@@ -1,30 +1,30 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { Contributor } from "../types";
 import { useWallet } from "@alephium/web3-react";
-import { NodeProvider, ONE_ALPH, web3 } from "@alephium/web3";
+import { ONE_ALPH } from "@alephium/web3";
 import { bigIntToNumber } from "../utils";
 import { Contribute } from "./Contribute";
 import { Contributors } from "./Contributors";
 import { Flex } from "@chakra-ui/react";
-import { Pool as PoolContract } from "../artifacts/ts";
+import { Pool as PoolContract } from "../../artifacts/ts";
+import { NodeProviderContext } from "../contexts/NodeProvider";
 
-interface PoolProps {}
+interface PoolProps {
+  poolContractAddress: string;
+}
 
-export const Pool: React.FC<PoolProps> = () => {
+export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const [totalCollected, setTotalCollected] = useState<number>(0);
-  const [end, setEnd] = useState<number>(null);
-  const [beneficiary, setBeneficiary] = useState<string>(null);
-  const [creator, setCreator] = useState<string>(null)
+  const [end, setEnd] = useState<number>(0);
+  const [beneficiary, setBeneficiary] = useState<string>("");
+  const [creator, setCreator] = useState<string>("");
   const [goal, setGoal] = useState<number>(0);
   const [contributors, setContributors] = useState<Contributor[]>([]);
 
   const { signer } = useWallet();
+  const { nodeProvider} = useContext(NodeProviderContext);
 
-  const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL;
-  const nodeProvider = new NodeProvider(nodeUrl);
-  web3.setCurrentNodeProvider(nodeProvider);
-  const poolAddress = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
-  const pool = PoolContract.at(poolAddress);
+  const pool = PoolContract.at(poolContractAddress);
 
   const callContribute = async (amount: number) => {
     if (signer) {
@@ -36,7 +36,8 @@ export const Pool: React.FC<PoolProps> = () => {
     }
   };
 
-  const fetchContractData = async () => {
+  // @ts-ignore
+  const fetchContractData = useCallback(async () => {
     let data: any = await pool.view.getTotalCollected();
     setTotalCollected(bigIntToNumber(data.returns));
 
@@ -53,23 +54,23 @@ export const Pool: React.FC<PoolProps> = () => {
     setGoal(bigIntToNumber(data.returns));
 
     data = await nodeProvider.events.getEventsContractContractaddress(
-      poolAddress,
+      poolContractAddress,
       {
         start: 0,
       },
     );
 
     setContributors(
-      data.events.map((log) => ({
+      data.events.map((log: any) => ({
         address: log.fields[0].value as string,
         amount: log.fields[1].value as number,
       })),
     );
-  };
+  }, [poolContractAddress]);
 
   useEffect(() => {
     fetchContractData();
-  }, []);
+  }, [fetchContractData]);
 
   return (
     <Flex direction={"column"} alignItems={"flex-start"} px={3}>

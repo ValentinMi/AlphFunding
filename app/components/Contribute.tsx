@@ -27,14 +27,13 @@ interface ContributeProps {
   beneficiary: string;
   creator: string;
   end: number;
-  callContribute: (amount: number) => Promise<SignExecuteScriptTxResult>;
+  callContribute: (amount: number) => Promise<SignExecuteScriptTxResult | undefined>;
   fetchContractData: () => Promise<void>;
 }
 
 export const Contribute: React.FC<ContributeProps> = ({
   totalCollected,
   goal,
-  owner,
   end,
   callContribute,
   beneficiary,
@@ -63,7 +62,7 @@ export const Contribute: React.FC<ContributeProps> = ({
           Beneficiary:{" "}
           <Link
             isExternal
-            href={`https://explorer.alephium.org/addresses/${owner}`}
+            href={`https://explorer.alephium.org/addresses/${beneficiary}`}
           >
             {beneficiary}
           </Link>
@@ -72,7 +71,7 @@ export const Contribute: React.FC<ContributeProps> = ({
           Pool creator:{" "}
           <Link
             isExternal
-            href={`https://explorer.alephium.org/addresses/${owner}`}
+            href={`https://explorer.alephium.org/addresses/${creator}`}
           >
             {creator}
           </Link>
@@ -101,6 +100,7 @@ export const Contribute: React.FC<ContributeProps> = ({
       </Flex>
       <AlertDialog
         isOpen={isOpen}
+        // @ts-ignore
         leastDestructiveRef={cancelRef}
         onClose={onClose}
         isCentered
@@ -134,6 +134,7 @@ export const Contribute: React.FC<ContributeProps> = ({
               </Text>
             </AlertDialogBody>
             <AlertDialogFooter>
+             {/* @ts-ignore*/}
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>

@@ -1,6 +1,5 @@
 import React from "react";
-import { Box, Flex, StackDivider, Text, VStack } from "@chakra-ui/react";
-import { sliceAddress } from "../utils";
+import { Box, Flex, Link, StackDivider, Text, VStack } from "@chakra-ui/react";
 import { Contributor } from "../types";
 
 interface ContributorsProps {
@@ -29,7 +28,14 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
           justifyContent={"space-between"}
           w={"100%"}
         >
-          <Text>{sliceAddress(contributor.address)}</Text>
+          <Text>
+            <Link
+              isExternal
+              href={`https://explorer.alephium.org/addresses/${contributor.address}`}
+            >
+              {contributor.address}
+            </Link>
+          </Text>
           <Text>{contributor.amount} ALPH</Text>
         </Flex>
       ))}
