@@ -1,6 +1,13 @@
 "use client";
 import { Layout } from "./components/layout/Layout";
-import { Button, Container, Flex, Heading, HStack, Link } from "@chakra-ui/react";
+import {
+  Button,
+  Container,
+  Flex,
+  Heading,
+  HStack,
+  Link,
+} from "@chakra-ui/react";
 import NextLink from "next/link";
 
 export default function Page() {
