@@ -1,12 +1,28 @@
 "use server";
-import { PoolInfos } from "./types";
+import { CreatePoolParams, PoolInfos } from "./types";
 import { prisma } from "./prisma";
 
-export async function getPools(): Promise<PoolInfos[]> {
+export const getPools = async (): Promise<PoolInfos[]> => {
   try {
-    return await prisma.pool.findMany()
+    return await prisma.pool.findMany();
   } catch (e) {
-    console.error(e)
-    return []
+    console.error(e);
+    return [];
   }
-}
+};
+
+export const createPool = async (
+  poolParams: CreatePoolParams,
+): Promise<PoolInfos | undefined> => {
+  try {
+    return await prisma.pool.create({
+      data: {
+        poolContractAddress: poolParams.poolContractAddress,
+        name: poolParams.name,
+        description: poolParams.description,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
+};
