@@ -1,6 +1,7 @@
 import React from "react";
 import { Box, Flex, Link, StackDivider, Text, VStack } from "@chakra-ui/react";
 import { Contributor } from "../types";
+import { weiToAlph } from "../utils";
 
 interface ContributorsProps {
   contributors: Contributor[];
@@ -16,7 +17,6 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
 
   return (
     <VStack
-      w={"50%"}
       border={"1px solid white"}
       p={1}
       divider={<StackDivider borderColor="gray.200" />}
@@ -36,7 +36,7 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
               {contributor.address}
             </Link>
           </Text>
-          <Text>{contributor.amount} ALPH</Text>
+          <Text ml={6}>{weiToAlph(contributor.amount)} ALPH</Text>
         </Flex>
       ))}
     </VStack>

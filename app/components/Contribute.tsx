@@ -9,41 +9,33 @@ import {
   Box,
   Button,
   Flex,
-  Link,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
   NumberInputField,
   NumberInputStepper,
-  Progress,
   Text,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
-import { SignExecuteScriptTxResult } from "@alephium/web3";
+import { useWallet } from "@alephium/web3-react";
+import { ExecuteScriptResult } from "@alephium/web3";
 
 interface ContributeProps {
-  totalCollected: number;
-  goal: number;
-  beneficiary: string;
-  creator: string;
-  end: number;
-  callContribute: (amount: number) => Promise<SignExecuteScriptTxResult | undefined>;
+  callContribute: (amount: number) => Promise<ExecuteScriptResult | undefined>;
   fetchContractData: () => Promise<void>;
+  connectedAccountIsContributor: boolean;
 }
 
 export const Contribute: React.FC<ContributeProps> = ({
-  totalCollected,
-  goal,
-  end,
   callContribute,
-  beneficiary,
-  creator,
-  fetchContractData
+  fetchContractData,
+  connectedAccountIsContributor,
 }) => {
-  const isContributor = false;
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState<number>(0);
+
+  const { connectionStatus } = useWallet();
 
   const handleContribute = async (amount: number) => {
     await callContribute(amount);
@@ -53,51 +45,19 @@ export const Contribute: React.FC<ContributeProps> = ({
 
   return (
     <>
-      <Flex
-        direction={"column"}
-        alignItems={"flex-start"}
-        justifyContent={"center"}
-      >
-        <Text>
-          Beneficiary:{" "}
-          <Link
-            isExternal
-            href={`https://explorer.alephium.org/addresses/${beneficiary}`}
+      <Box mt={4}>
+        {!connectedAccountIsContributor ? (
+          <Button
+            colorScheme={"green"}
+            onClick={onOpen}
+            isDisabled={connectionStatus !== "connected"}
           >
-            {beneficiary}
-          </Link>
-        </Text>
-        <Text>
-          Pool creator:{" "}
-          <Link
-            isExternal
-            href={`https://explorer.alephium.org/addresses/${creator}`}
-          >
-            {creator}
-          </Link>
-        </Text>
-        <Flex justifyContent={"space-between"} w={"100%"} mt={2}>
-          <Text>
-            {totalCollected} / {goal} ALPH
-          </Text>
-          {end && <Text>{new Date(end).toLocaleString()}</Text>}
-        </Flex>
-        <Progress
-          hasStripe
-          value={(totalCollected / goal) * 100}
-          w={"100%"}
-          mt={2}
-        />
-        <Box mt={2}>
-          {isContributor ? (
-            <Button>Refund</Button>
-          ) : (
-            <Button colorScheme={"green"} onClick={onOpen}>
-              Contribute
-            </Button>
-          )}
-        </Box>
-      </Flex>
+            Contribute
+          </Button>
+        ) : (
+          <Button colorScheme={"orange"}>Refund</Button>
+        )}
+      </Box>
       <AlertDialog
         isOpen={isOpen}
         // @ts-ignore
@@ -134,7 +94,7 @@ export const Contribute: React.FC<ContributeProps> = ({
               </Text>
             </AlertDialogBody>
             <AlertDialogFooter>
-             {/* @ts-ignore*/}
+              {/* @ts-ignore*/}
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
