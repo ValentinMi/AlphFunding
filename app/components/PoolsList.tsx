@@ -1,8 +1,7 @@
-"use client";
 import React, { useEffect, useState } from "react";
 import { PoolInfos } from "../types";
 import { getPools } from "../actions";
-import { SimpleGrid } from "@chakra-ui/react";
+import { Box, Flex, SimpleGrid, VStack } from "@chakra-ui/react";
 import { PoolsListCard } from "./PoolsListCard";
 
 interface PoolsListProps {}
@@ -12,16 +11,32 @@ export const PoolsList: React.FC<PoolsListProps> = () => {
 
   useEffect(() => {
     const fetchPools = async () => {
-      const pools = await getPools()
+      const pools = await getPools();
       setPools(pools);
     };
     fetchPools();
   }, []);
 
+  if (!pools.length)
+    return (
+      <Flex w={"100%"} justifyContent={"center"}>
+        <Box w={"60%"}>
+          <VStack spacing={5}>
+            <Box>No pools available</Box>
+          </VStack>
+        </Box>
+      </Flex>
+    );
+
   return (
     <SimpleGrid columns={3} spacing={10}>
       {pools.map((pool) => (
-        <PoolsListCard key={pool.id} name={pool.name} description={pool.description} poolContractAddress={pool.poolContractAddress} />
+        <PoolsListCard
+          key={pool.id}
+          name={pool.name}
+          description={pool.description}
+          poolContractAddress={pool.poolContractAddress}
+        />
       ))}
     </SimpleGrid>
   );

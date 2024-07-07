@@ -10,11 +10,12 @@ import {
   Heading,
   Link,
   Stack,
-  Text
+  Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { Pool } from "../../artifacts/ts";
-import { bigIntToNumber, truncateText } from "../utils";
+import { bigIntToNumber, truncateText, weiToAlph } from "../utils";
+import { Countdown } from "./Countdown";
 
 interface PoolsListCardProps {
   name: string;
@@ -35,7 +36,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
 
   const fetchContractData = useCallback(async () => {
     let data: any = await pool.view.getTotalCollected();
-    setTotalCollected(bigIntToNumber(data.returns));
+    setTotalCollected(weiToAlph(BigInt(data.returns)));
 
     data = await pool.view.getEnd();
     setEnd(bigIntToNumber(data.returns));
@@ -46,7 +47,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
 
   useEffect(() => {
     fetchContractData();
-  }, [fetchContractData])
+  }, [fetchContractData]);
 
   return (
     <Card
@@ -57,26 +58,39 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
       <Stack w={"100%"}>
         <CardBody>
           <Flex w={"100%"} justifyContent={"space-between"}>
-            <Box>
+            <Box w={"80%"}>
               <Heading size="md">{name}</Heading>
-
-              <Text py="2">{truncateText(description, 100)}</Text>
+              <Text py="2">{truncateText(description, 150)}</Text>
             </Box>
             <Flex direction={"column"} alignItems={"center"}>
-              <CircularProgress value={totalCollected / goal * 100} thickness="12px" />
+              <CircularProgress
+                value={(totalCollected / goal) * 100}
+                thickness="12px"
+              />
               <Text mt={1}>
                 {totalCollected}/{goal} ALPH
               </Text>
             </Flex>
           </Flex>
         </CardBody>
-
         <CardFooter>
-          <Link as={NextLink} href={`/pools/${poolContractAddress}`}>
-            <Button variant="solid" colorScheme="blue">
-              View
-            </Button>
-          </Link>
+          <Flex
+            justifyContent={"space-between"}
+            alignItems={"flex-end"}
+            w={"100%"}
+          >
+            <Link as={NextLink} href={`/pools/${poolContractAddress}`}>
+              <Button variant="solid" colorScheme="blue">
+                View
+              </Button>
+            </Link>
+            {!!end && (
+              <Flex ml={4}>
+                <Text mr={2}>ends in:</Text>{" "}
+                <Countdown targetDate={new Date(end)} />
+              </Flex>
+            )}
+          </Flex>
         </CardFooter>
       </Stack>
     </Card>
