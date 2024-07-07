@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Box,
   Button,
@@ -14,10 +14,14 @@ import {
   NumberInputField,
   NumberInputStepper,
   Textarea,
-  VStack
+  VStack,
 } from "@chakra-ui/react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { isDateAtLeastOneWeekInFuture } from "../utils";
+import { dateToTimestamp, isDateAtLeastOneWeekInFuture } from "../utils";
+import { useWallet } from "@alephium/web3-react";
+import { Pool } from "artifacts/ts/Pool";
+import { createPool } from "../actions";
+import { useRouter } from "next/navigation";
 
 interface PoolFormProps {}
 
@@ -30,13 +34,62 @@ type Inputs = {
 };
 
 export const PoolForm: React.FC<PoolFormProps> = () => {
+  const { signer, account } = useWallet();
+  const router = useRouter();
+
+  const [isLoading, setIsLoading] = useState(false);
+
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<Inputs>();
 
-  const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<Inputs> = async (data) => {
+    try {
+      if (signer) {
+        setIsLoading(true);
+        const newPool = await Pool.deploy(signer, {
+          initialFields: {
+            end: BigInt(dateToTimestamp(data.end) * 1000),
+            goal: BigInt(data.goal),
+            creator: account?.address,
+            beneficiary: data.beneficiary,
+            totalCollected: BigInt(0),
+          },
+        });
+
+        if (newPool.contractInstance.address) {
+          console.log(
+            "Pool created with address",
+            newPool.contractInstance.address,
+          );
+          await createPool({
+            poolContractAddress: newPool.contractInstance.address,
+            name: data.name,
+            description: data.description,
+          });
+        }
+
+        router.push(`/pools/${newPool.contractInstance.address}`);
+      }
+    } catch (e) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (!signer) {
+    return (
+      <Flex w={"100%"} justifyContent={"center"}>
+        <Box w={"60%"}>
+          <VStack spacing={5}>
+            <Box>Connect your wallet to create a pool</Box>
+          </VStack>
+        </Box>
+      </Flex>
+    );
+  }
 
   return (
     <Flex w={"100%"} justifyContent={"center"}>
@@ -104,7 +157,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
               <Input
                 type="date"
                 {...register("end", {
-                /*  required: true,
+                  /*  required: true,
                   pattern:
                     /^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d$/,*/
                   validate: (value) => isDateAtLeastOneWeekInFuture(value),
@@ -143,7 +196,12 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
             </FormControl>
           </VStack>
           <Flex justifyContent={"center"}>
-            <Button colorScheme={"green"} type={"submit"} mt={6}>
+            <Button
+              colorScheme={"green"}
+              type={"submit"}
+              mt={6}
+              isLoading={isLoading}
+            >
               Submit
             </Button>
           </Flex>

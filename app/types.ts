@@ -1,6 +1,6 @@
 export type Contributor = {
   address: string;
-  amount: number;
+  amount: bigint;
 };
 
 export type PoolInfos = {
@@ -9,3 +9,5 @@ export type PoolInfos = {
   name: string;
   description: string;
 };
+
+export type CreatePoolParams = Omit<PoolInfos, "id">;
