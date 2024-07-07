@@ -2,7 +2,7 @@ TxScript Contribute(
     pool: Pool,
     amount: U256
 ) {
-    pool.contribute{callerAddress!() -> ALPH: minimalContractDeposit!()}(amount)
+    pool.contribute{callerAddress!() -> ALPH: amount + mapEntryDeposit!()}(amount)
 }
 
 TxScript Withdraw(

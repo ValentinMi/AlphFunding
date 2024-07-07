@@ -41,7 +41,7 @@ Contract Pool(
 
 
     // Allows to contribute to the pool
-    @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false, assetsInContract = true)
+    @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false, payToContractOnly = true)
     pub fn contribute(amount: U256) -> () {
         let blockTimeStamp = blockTimeStamp!()
         assert!(blockTimeStamp < end, ErrorCodes.CollectIsFinished)
