@@ -1,13 +1,17 @@
 "use client";
 import { ChakraProvider } from "@chakra-ui/react";
 import { AlephiumWalletProvider } from "@alephium/web3-react";
-import { NodeProvider } from "./contexts/NodeProvider";
+import { NodeProvider, web3 } from "@alephium/web3";
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL;
+  const nodeProvider = new NodeProvider(nodeUrl!);
+  web3.setCurrentNodeProvider(nodeProvider);
+
   return (
     <html lang="en">
       <body>
@@ -17,7 +21,7 @@ export default function RootLayout({
             network="devnet"
             addressGroup={0}
           >
-            <NodeProvider>{children}</NodeProvider>
+            {children}
           </AlephiumWalletProvider>
         </ChakraProvider>
       </body>
