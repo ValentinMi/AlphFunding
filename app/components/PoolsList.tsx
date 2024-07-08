@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PoolInfos } from "../types";
+import { PoolContract } from "../types";
 import { getPools } from "../actions";
 import { Box, Flex, SimpleGrid, VStack } from "@chakra-ui/react";
 import { PoolsListCard } from "./PoolsListCard";
@@ -7,7 +7,7 @@ import { PoolsListCard } from "./PoolsListCard";
 interface PoolsListProps {}
 
 export const PoolsList: React.FC<PoolsListProps> = () => {
-  const [pools, setPools] = useState<PoolInfos[]>([]);
+  const [pools, setPools] = useState<PoolContract[]>([]);
 
   useEffect(() => {
     const fetchPools = async () => {
@@ -33,9 +33,7 @@ export const PoolsList: React.FC<PoolsListProps> = () => {
       {pools.map((pool) => (
         <PoolsListCard
           key={pool.id}
-          name={pool.name}
-          description={pool.description}
-          poolContractAddress={pool.poolContractAddress}
+          poolContractAddress={pool.contractAddress}
         />
       ))}
     </SimpleGrid>

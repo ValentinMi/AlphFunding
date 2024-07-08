@@ -3,13 +3,11 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider = "sqlite"
+  url      = "file:./pools.db"
 }
 
 model Pool {
-  id                  String @id @default(auto()) @map("_id") @db.ObjectId
-  description         String
-  name                String
-  poolContractAddress String
+  id              Int    @id @default(autoincrement())
+  contractAddress String
 }

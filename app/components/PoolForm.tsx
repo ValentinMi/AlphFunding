@@ -22,6 +22,7 @@ import { useWallet } from "@alephium/web3-react";
 import { Pool } from "artifacts/ts/Pool";
 import { createPool } from "../actions";
 import { useRouter } from "next/navigation";
+import { stringToHex } from "@alephium/web3";
 
 interface PoolFormProps {}
 
@@ -51,9 +52,11 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
         setIsLoading(true);
         const newPool = await Pool.deploy(signer, {
           initialFields: {
+            name: stringToHex(data.name),
+            description: stringToHex(data.description),
             end: BigInt(dateToTimestamp(data.end) * 1000),
-            goal: BigInt(data.goal),
-            creator: account?.address,
+            goal: BigInt(data.goal * 1e18),
+            creator: account!.address,
             beneficiary: data.beneficiary,
             totalCollected: BigInt(0),
           },
@@ -65,15 +68,14 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
             newPool.contractInstance.address,
           );
           await createPool({
-            poolContractAddress: newPool.contractInstance.address,
-            name: data.name,
-            description: data.description,
+            contractAddress: newPool.contractInstance.address,
           });
         }
 
         router.push(`/pools/${newPool.contractInstance.address}`);
       }
     } catch (e) {
+      console.error(e);
     } finally {
       setIsLoading(false);
     }

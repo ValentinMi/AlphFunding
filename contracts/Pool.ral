@@ -1,4 +1,6 @@
 Contract Pool(
+    name: ByteVec,
+    description: ByteVec,
     creator: Address,
     beneficiary: Address,
     end: U256,
@@ -39,6 +41,13 @@ Contract Pool(
         return creator
     }
 
+    pub fn getName() -> ByteVec {
+        return name
+    }
+
+    pub fn getDescription() -> ByteVec {
+        return description
+    }
 
     // Allows to contribute to the pool
     @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false, payToContractOnly = true)
@@ -57,7 +66,7 @@ Contract Pool(
         emit Contribute(caller, amount, totalCollected)
     }
 
-    // Allows the beneficiary to withdraw pool's gains
+    // Allows the beneficiary or owner to withdraw pool's gains to benificiary address
     @using(assetsInContract = true)
     pub fn withdraw() -> () {
         let caller = callerAddress!()
@@ -69,7 +78,7 @@ Contract Pool(
         destroySelf!(beneficiary)
     }
 
-    // Allows to refund the contribution
+    // Allows to refund the contribution to contributor address
     @using(assetsInContract = true, updateFields = true, checkExternalCaller = false)
     pub fn refund() -> () {
         let blockTimeStamp = blockTimeStamp!()

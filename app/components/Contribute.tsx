@@ -22,13 +22,13 @@ import { ExecuteScriptResult } from "@alephium/web3";
 
 interface ContributeProps {
   callContribute: (amount: number) => Promise<ExecuteScriptResult | undefined>;
-  fetchContractData: () => Promise<void>;
+  fetchContractFields: () => Promise<void>;
   connectedAccountIsContributor: boolean;
 }
 
 export const Contribute: React.FC<ContributeProps> = ({
   callContribute,
-  fetchContractData,
+  fetchContractFields,
   connectedAccountIsContributor,
 }) => {
   const cancelRef = useRef();
@@ -39,7 +39,7 @@ export const Contribute: React.FC<ContributeProps> = ({
 
   const handleContribute = async (amount: number) => {
     await callContribute(amount);
-    await fetchContractData();
+    await fetchContractFields();
     onClose();
   };
 

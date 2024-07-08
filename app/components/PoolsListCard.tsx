@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,41 +13,54 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { Pool } from "../../artifacts/ts";
-import { bigIntToNumber, truncateText, weiToAlph } from "../utils";
+import { Pool, PoolTypes } from "../../artifacts/ts";
+import { truncateText, weiToAlph } from "../utils";
 import { Countdown } from "./Countdown";
+import { hexToString } from "@alephium/web3";
 
 interface PoolsListCardProps {
-  name: string;
-  description: string;
   poolContractAddress: string;
 }
 
+type PoolListCardFields = Omit<PoolTypes.Fields, "beneficiary" | "creator">;
+
 export const PoolsListCard: React.FC<PoolsListCardProps> = ({
-  name,
-  description,
   poolContractAddress,
 }) => {
-  const [totalCollected, setTotalCollected] = useState<number>(0);
-  const [end, setEnd] = useState<number>(0);
-  const [goal, setGoal] = useState<number>(0);
+  const [contractFields, setContractFields] = useState<PoolListCardFields>({
+    totalCollected: 0n,
+    end: 0n,
+    goal: 0n,
+    name: "",
+    description: "",
+  });
 
   const pool = Pool.at(poolContractAddress);
 
-  const fetchContractData = useCallback(async () => {
+  const fetchContractFields = async () => {
+    const fields: PoolListCardFields = {} as any;
+
     let data: any = await pool.view.getTotalCollected();
-    setTotalCollected(weiToAlph(BigInt(data.returns)));
+    fields.totalCollected = data.returns;
 
     data = await pool.view.getEnd();
-    setEnd(bigIntToNumber(data.returns));
+    fields.end = data.returns;
 
     data = await pool.view.getGoal();
-    setGoal(bigIntToNumber(data.returns));
-  }, [poolContractAddress]);
+    fields.goal = data.returns;
+
+    data = await pool.view.getName();
+    fields.name = hexToString(data.returns);
+
+    data = await pool.view.getDescription();
+    fields.description = hexToString(data.returns);
+
+    setContractFields(fields);
+  };
 
   useEffect(() => {
-    fetchContractData();
-  }, [fetchContractData]);
+    fetchContractFields();
+  }, [fetchContractFields]);
 
   return (
     <Card
@@ -59,16 +72,23 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
         <CardBody>
           <Flex w={"100%"} justifyContent={"space-between"}>
             <Box w={"80%"}>
-              <Heading size="md">{name}</Heading>
-              <Text py="2">{truncateText(description, 150)}</Text>
+              <Heading size="md">{contractFields.name}</Heading>
+              <Text py="2">
+                {truncateText(contractFields.description, 150)}
+              </Text>
             </Box>
             <Flex direction={"column"} alignItems={"center"}>
               <CircularProgress
-                value={(totalCollected / goal) * 100}
+                value={
+                  (Number(weiToAlph(contractFields.totalCollected)) /
+                    Number(weiToAlph(contractFields.goal))) *
+                  100
+                }
                 thickness="12px"
               />
               <Text mt={1}>
-                {totalCollected}/{goal} ALPH
+                {Number(weiToAlph(contractFields.totalCollected))}/
+                {Number(weiToAlph(contractFields.goal))} ALPH
               </Text>
             </Flex>
           </Flex>
@@ -84,10 +104,10 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                 View
               </Button>
             </Link>
-            {!!end && (
+            {!!contractFields.end && (
               <Flex ml={4}>
                 <Text mr={2}>ends in:</Text>{" "}
-                <Countdown targetDate={new Date(end)} />
+                <Countdown targetDate={new Date(Number(contractFields.end))} />
               </Flex>
             )}
           </Flex>

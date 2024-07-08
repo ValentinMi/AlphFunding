@@ -28,7 +28,12 @@ export const Header: React.FC<HeaderProps> = () => {
     <Flex w={"100%"} justifyContent={"space-between"} p={3}>
       <Flex alignItems={"baseline"}>
         <Box as={NextLink} href={"/"}>
-          <Heading>AlphPool</Heading>
+          <Heading>
+            Alph
+            <Box as={"span"} color={"yellow.500"}>
+              Pool
+            </Box>
+          </Heading>
         </Box>
         <HStack ml={10} spacing={8}>
           <Link as={NextLink} href={"/"}>

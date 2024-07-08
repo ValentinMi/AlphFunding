@@ -3,11 +3,9 @@ export type Contributor = {
   amount: bigint;
 };
 
-export type PoolInfos = {
-  id: string;
-  poolContractAddress: string;
-  name: string;
-  description: string;
+export type PoolContract = {
+  id: number;
+  contractAddress: string;
 };
 
-export type CreatePoolParams = Omit<PoolInfos, "id">;
+export type CreatePoolContract = Omit<PoolContract, "id">;

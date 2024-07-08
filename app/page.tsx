@@ -1,6 +1,7 @@
 "use client";
 import { Layout } from "./components/layout/Layout";
 import {
+  Box,
   Button,
   Container,
   Divider,
@@ -17,7 +18,10 @@ export default function Page() {
     <Layout>
       <Flex w={"100%"} alignItems={"center"} direction={"column"}>
         <Heading as={"h1"} size={"3xl"}>
-          Welcome to AlphPool
+          Welcome to Alph
+          <Box as={"span"} color={"yellow.500"}>
+            Pool
+          </Box>
         </Heading>
         <Container centerContent mt={5} textAlign={"center"}>
           <Text>
