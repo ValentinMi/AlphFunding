@@ -21,9 +21,13 @@ import { useWallet } from "@alephium/web3-react";
 
 interface ContributeProps {
   callContribute: (amount: number) => Promise<void>;
+  connectedAccountIsContributor: boolean;
 }
 
-export const Contribute: React.FC<ContributeProps> = ({ callContribute }) => {
+export const Contribute: React.FC<ContributeProps> = ({
+  callContribute,
+  connectedAccountIsContributor,
+}) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState<number>(0);
@@ -77,9 +81,14 @@ export const Contribute: React.FC<ContributeProps> = ({ callContribute }) => {
                 ALPH
               </Flex>
               <Text mt={2} textAlign={"center"}>
-                You can't refund your contribution if the goal is reached or
-                before the end of the pool.
+                You can't refund your contribution if the goal is reached
               </Text>
+              {!connectedAccountIsContributor && (
+                <Text color={"gray"} mt={4} textAlign={"center"}>
+                  As it's your first contribution to this pool, 0.1 ALPH is
+                  charged for minimal contract deposit
+                </Text>
+              )}
             </AlertDialogBody>
             <AlertDialogFooter>
               {/* @ts-ignore*/}

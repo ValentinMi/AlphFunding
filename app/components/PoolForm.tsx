@@ -13,6 +13,7 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Text,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
@@ -185,6 +186,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
                   minLength: 100,
                   maxLength: 1000,
                 })}
+                minHeight={"200px"}
               />
               {!!errors.description && (
                 <FormErrorMessage>
@@ -208,6 +210,9 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
             </Button>
           </Flex>
         </form>
+        <Text color={"gray"} mt={4} textAlign={"center"}>
+          Create a pool cost 0.1 ALPH for the minimal deposit
+        </Text>
       </Box>
     </Flex>
   );

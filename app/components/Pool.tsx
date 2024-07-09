@@ -232,7 +232,10 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
           mt={2}
         />
         <HStack spacing={3}>
-          <Contribute callContribute={callContribute} />
+          <Contribute
+            callContribute={callContribute}
+            connectedAccountIsContributor={connectedAccountIsContributor}
+          />
           {connectedAccountIsContributor && <Refund callRefund={callRefund} />}
         </HStack>
         <Box mt={4}>
