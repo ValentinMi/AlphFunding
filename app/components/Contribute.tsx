@@ -18,19 +18,12 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
-import { ExecuteScriptResult } from "@alephium/web3";
 
 interface ContributeProps {
-  callContribute: (amount: number) => Promise<ExecuteScriptResult | undefined>;
-  fetchContractFields: () => Promise<void>;
-  connectedAccountIsContributor: boolean;
+  callContribute: (amount: number) => Promise<void>;
 }
 
-export const Contribute: React.FC<ContributeProps> = ({
-  callContribute,
-  fetchContractFields,
-  connectedAccountIsContributor,
-}) => {
+export const Contribute: React.FC<ContributeProps> = ({ callContribute }) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [amount, setAmount] = useState<number>(0);
@@ -39,24 +32,19 @@ export const Contribute: React.FC<ContributeProps> = ({
 
   const handleContribute = async (amount: number) => {
     await callContribute(amount);
-    await fetchContractFields();
     onClose();
   };
 
   return (
     <>
       <Box mt={4}>
-        {!connectedAccountIsContributor ? (
-          <Button
-            colorScheme={"green"}
-            onClick={onOpen}
-            isDisabled={connectionStatus !== "connected"}
-          >
-            Contribute
-          </Button>
-        ) : (
-          <Button colorScheme={"orange"}>Refund</Button>
-        )}
+        <Button
+          colorScheme={"green"}
+          onClick={onOpen}
+          isDisabled={connectionStatus !== "connected"}
+        >
+          Contribute
+        </Button>
       </Box>
       <AlertDialog
         isOpen={isOpen}

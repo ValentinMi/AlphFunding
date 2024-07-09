@@ -2,13 +2,25 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Contributor } from "../types";
 import { useWallet } from "@alephium/web3-react";
 import { Contributors } from "./Contributors";
-import { Box, Flex, Heading, Link, Progress, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Link,
+  Progress,
+  Text,
+} from "@chakra-ui/react";
 import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
-import { Contribute as ContributeTransaction } from "artifacts/ts/scripts";
-import { hexToString, ONE_ALPH, web3 } from "@alephium/web3";
+import {
+  Contribute as ContributeTransaction,
+  Refund as RefundTransaction,
+} from "artifacts/ts/scripts";
+import { DUST_AMOUNT, hexToString, ONE_ALPH, web3 } from "@alephium/web3";
 import { Contribute } from "./Contribute";
 import { Countdown } from "./Countdown";
 import { weiToAlph } from "../utils";
+import { Refund } from "./Refund";
 
 interface PoolProps {
   poolContractAddress: string;
@@ -16,6 +28,8 @@ interface PoolProps {
 
 export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const [contributors, setContributors] = useState<Contributor[]>([]);
+  const [connectedAccountIsContributor, setConnectedAccountIsContributor] =
+    useState<boolean>(false);
   const [contractFields, setContractFields] = useState<PoolTypes.Fields>({
     name: "",
     beneficiary: "",
@@ -28,18 +42,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const { signer, account } = useWallet();
 
   const pool = PoolContract.at(poolContractAddress);
-
-  const callContribute = async (amount: number) => {
-    if (signer) {
-      return await ContributeTransaction.execute(signer, {
-        initialFields: {
-          pool: poolContractAddress,
-          amount: ONE_ALPH * BigInt(amount),
-        },
-        attoAlphAmount: ONE_ALPH * BigInt(amount) + ONE_ALPH / 10n,
-      });
-    }
-  };
 
   const fetchContractFields = async () => {
     try {
@@ -85,21 +87,74 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
           },
         );
 
-      setContributors(
-        contributors.events.map((log: any) => ({
-          address: log.fields[0].value as string,
-          amount: log.fields[1].value as bigint,
-        })),
+      const contributorsMap = new Map();
+
+      contributors.events.forEach((log: any) => {
+        const address = log.fields[0].value as string;
+        const amount = BigInt(log.fields[1].value); // Ensure the amount is a bigint
+
+        if (contributorsMap.has(address)) {
+          // If the address is already in the map, sum the amounts
+          contributorsMap.set(address, contributorsMap.get(address) + amount);
+        } else {
+          // If the address is not in the map, add it
+          contributorsMap.set(address, amount);
+        }
+      });
+
+      // Convert the map back to an array of objects
+      const contributorsArray = Array.from(
+        contributorsMap,
+        ([address, amount]) => ({
+          address,
+          amount,
+        }),
       );
+
+      setContributors(contributorsArray);
     }
   }, []);
 
-  const connectedAccountIsContributor = useCallback((): boolean => {
-    if (!account) return false;
+  const callContribute = async (amount: number) => {
+    if (signer) {
+      await ContributeTransaction.execute(signer, {
+        initialFields: {
+          pool: poolContractAddress,
+          amount: ONE_ALPH * BigInt(amount),
+        },
+        // Add mapEntryDeposit (0.1 ALPH) if user never contributed to the pool
+        attoAlphAmount: connectedAccountIsContributor
+          ? ONE_ALPH * BigInt(amount)
+          : ONE_ALPH * BigInt(amount) + ONE_ALPH / 10n,
+      });
 
-    return contributors.some(
-      (contributor) => contributor.address === account.address,
-    );
+      await fetchContractFields();
+      await fetchContributors();
+    }
+  };
+
+  const callRefund = async () => {
+    if (signer) {
+      await RefundTransaction.execute(signer, {
+        initialFields: {
+          pool: poolContractAddress,
+        },
+        attoAlphAmount: DUST_AMOUNT * 2n,
+      });
+
+      await fetchContractFields();
+      await fetchContributors();
+    }
+  };
+
+  useEffect(() => {
+    if (account) {
+      setConnectedAccountIsContributor(
+        contributors.some(
+          (contributor) => contributor.address === account.address,
+        ),
+      );
+    }
   }, [account, contributors]);
 
   useEffect(() => {
@@ -123,7 +178,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
           direction={"column"}
           alignItems={"flex-start"}
           justifyContent={"center"}
-          mt={8}
         >
           <Text>
             Beneficiary:{" "}
@@ -167,6 +221,8 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
         </Flex>
         <Progress
           hasStripe
+          size="lg"
+          colorScheme={"yellow"}
           value={
             (Number(contractFields.totalCollected) /
               Number(contractFields.goal)) *
@@ -175,11 +231,10 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
           w={"100%"}
           mt={2}
         />
-        <Contribute
-          callContribute={callContribute}
-          fetchContractFields={fetchContractFields}
-          connectedAccountIsContributor={connectedAccountIsContributor()}
-        />
+        <HStack spacing={3}>
+          <Contribute callContribute={callContribute} />
+          {connectedAccountIsContributor && <Refund callRefund={callRefund} />}
+        </HStack>
         <Box mt={4}>
           <Contributors contributors={contributors} />
         </Box>

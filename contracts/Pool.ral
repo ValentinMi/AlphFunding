@@ -49,6 +49,16 @@ Contract Pool(
         return description
     }
 
+    pub fn getCallerContribution() -> U256 {
+        let caller = callerAddress!()
+        if (contributions.contains!(caller)) {
+            // If caller has already contribute
+            return contributions[caller]
+        } else {
+            return 0
+        }
+    }
+
     // Allows to contribute to the pool
     @using(preapprovedAssets = true, updateFields = true, checkExternalCaller = false, payToContractOnly = true)
     pub fn contribute(amount: U256) -> () {
@@ -60,7 +70,14 @@ Contract Pool(
         let key = caller
 
         transferTokenToSelf!(caller, ALPH, amount)
-        contributions.insert!(caller, key, amount)
+
+        if (contributions.contains!(key)) {
+            // If caller has already contribute
+            contributions[key] = contributions[key] + amount
+        } else {
+            contributions.insert!(caller, key, amount)
+        }
+
         totalCollected = totalCollected + amount
         
         emit Contribute(caller, amount, totalCollected)

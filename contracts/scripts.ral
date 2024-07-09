@@ -2,7 +2,14 @@ TxScript Contribute(
     pool: Pool,
     amount: U256
 ) {
-    pool.contribute{callerAddress!() -> ALPH: amount + mapEntryDeposit!()}(amount)
+    let callerContribution = pool.getCallerContribution()
+    if (callerContribution > 0) {
+        // If contributor has already contribute
+        pool.contribute{callerAddress!() -> ALPH: amount}(amount)
+    } else {
+        // If it's a new contributor -> add mapEntryDeposit
+        pool.contribute{callerAddress!() -> ALPH: amount + mapEntryDeposit!()}(amount)
+    }
 }
 
 TxScript Withdraw(
