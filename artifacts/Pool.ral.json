@@ -1,0 +1,209 @@
+{
+  "version": "v3.3.0",
+  "name": "Pool",
+  "bytecode": "070b0e1c402a4038404640544062409f4135416341d2010000000103d36f63de17a00002010000000103d34a0b5b9bce0402010000000103d3dbc1a727ce0502010000000103d3bb7a9219ce0302010000000103d30d54d1a8ce0202010000000103d3f4544ae5ce0002010000000103d33a1baf08ce0102010000010117d3f189b6b7b41700140a5f5f6d61705f5f305f5f16004744cbc54c0b0c0d0d140a5f5f6d61705f5f305f5f16004744cb0101024a020c0201070104004043d32d5281835617011601ce04310c7b16000c33117bb417021602170316021600a9140a5f5f6d61705f5f305f5f16034744cbc54c150c0d0d140a5f5f6d61705f5f305f5f16034744cb010116002a0c0e0c140a5f5f6d61705f5f305f5f16034744cb01024a0a1602d1a2140a5f5f6d61705f5f305f5f16034744b11600d20101a00016002aa1000516021600a00060010200020019d3a248861cb417001600ce03451600ce02451b0f7b5617011601ce0434a000ce05341a0e7bce03b001020003004031d3920288f65617001600ce04310c7ba000ce05310d7bb41701140a5f5f6d61705f5f305f5f16014744cbc5107b0c0d0d140a5f5f6d61705f5f305f5f16014744cb0101170216010d0c140a5f5f6d61705f5f305f5f16014744cb0103a00016022ba10016011602a8",
+  "codeHash": "755e4c8ef2b026795c01ca44bcca5dafeb20455d2f24ea90af5740817a065382",
+  "fieldsSig": {
+    "names": [
+      "name",
+      "description",
+      "creator",
+      "beneficiary",
+      "end",
+      "goal",
+      "totalCollected"
+    ],
+    "types": [
+      "ByteVec",
+      "ByteVec",
+      "Address",
+      "Address",
+      "U256",
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false,
+      false,
+      false,
+      false,
+      false,
+      true
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "Contribute",
+      "fieldNames": [
+        "contributor",
+        "amount",
+        "totalCollected"
+      ],
+      "fieldTypes": [
+        "Address",
+        "U256",
+        "U256"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "getTotalCollected",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getEnd",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getGoal",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "getBeneficiary",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Address"
+      ]
+    },
+    {
+      "name": "getCreator",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "Address"
+      ]
+    },
+    {
+      "name": "getName",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getDescription",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getCallerContribution",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": [
+        "U256"
+      ]
+    },
+    {
+      "name": "contribute",
+      "paramNames": [
+        "amount"
+      ],
+      "paramTypes": [
+        "U256"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "withdraw",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    },
+    {
+      "name": "refund",
+      "paramNames": [],
+      "paramTypes": [],
+      "paramIsMutable": [],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "CollectIsFinished",
+          "value": {
+            "type": "U256",
+            "value": "0"
+          }
+        },
+        {
+          "name": "GoalAlreadyReached",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        },
+        {
+          "name": "CollectNotFinished",
+          "value": {
+            "type": "U256",
+            "value": "2"
+          }
+        },
+        {
+          "name": "NotTheBeneficiary",
+          "value": {
+            "type": "U256",
+            "value": "3"
+          }
+        },
+        {
+          "name": "NoContribution",
+          "value": {
+            "type": "U256",
+            "value": "4"
+          }
+        },
+        {
+          "name": "NotEnoughFunds",
+          "value": {
+            "type": "U256",
+            "value": "5"
+          }
+        }
+      ]
+    }
+  ],
+  "mapsSig": {
+    "names": [
+      "contributions"
+    ],
+    "types": [
+      "Map[Address,U256]"
+    ]
+  }
+}
