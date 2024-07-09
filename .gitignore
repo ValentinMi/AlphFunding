@@ -4,4 +4,4 @@ deployments/
 .next/
 .idea/
 prisma/pools.db
-prisma/pools-db.journal
+prisma/pools.db-journal
