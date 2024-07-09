@@ -1,0 +1,41 @@
+{
+  "fullNodeVersion": "v3.3.0",
+  "compilerOptionsUsed": {
+    "ignoreUnusedConstantsWarnings": false,
+    "ignoreUnusedVariablesWarnings": false,
+    "ignoreUnusedFieldsWarnings": false,
+    "ignoreUnusedPrivateFunctionsWarnings": false,
+    "ignoreUpdateFieldsCheckWarnings": false,
+    "ignoreCheckExternalCallerWarnings": false
+  },
+  "infos": {
+    "Contribute": {
+      "sourceFile": "scripts.ral",
+      "sourceCodeHash": "ef1e51a6a2846fc630e8adda75bb9d843854186fc8a83cfd99acaf8ee73891fd",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "Pool": {
+      "sourceFile": "Pool.ral",
+      "sourceCodeHash": "1ecdaea93ff36c1679f59012c557ee293f3b70bbfbb533331629f3f9b323b512",
+      "bytecodeDebugPatch": "=34-2=1-3+e=2-1+7c4=1+04=331-1+5=203-1+c=40+7a7e0214696e73657274206174206d617020706174683a2000=147-1+3=178+7a7e021472656d6f7665206174206d617020706174683a2000=30",
+      "codeHashDebug": "cbfbed5c94c7e84d568625f83875d8997e5fc31f29c102931aa171f05797ec3f",
+      "warnings": []
+    },
+    "Refund": {
+      "sourceFile": "scripts.ral",
+      "sourceCodeHash": "ef1e51a6a2846fc630e8adda75bb9d843854186fc8a83cfd99acaf8ee73891fd",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    },
+    "Withdraw": {
+      "sourceFile": "scripts.ral",
+      "sourceCodeHash": "ef1e51a6a2846fc630e8adda75bb9d843854186fc8a83cfd99acaf8ee73891fd",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": "",
+      "warnings": []
+    }
+  }
+}
