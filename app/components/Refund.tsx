@@ -12,12 +12,17 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
+import { weiToAlph } from "../utils";
 
 interface RefundProps {
   callRefund: () => Promise<void>;
+  accountContributionAmount: bigint | undefined;
 }
 
-export const Refund: React.FC<RefundProps> = ({ callRefund }) => {
+export const Refund: React.FC<RefundProps> = ({
+  callRefund,
+  accountContributionAmount,
+}) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -34,7 +39,9 @@ export const Refund: React.FC<RefundProps> = ({ callRefund }) => {
         <Button
           colorScheme={"orange"}
           onClick={onOpen}
-          isDisabled={connectionStatus !== "connected"}
+          isDisabled={
+            connectionStatus !== "connected" || accountContributionAmount === 0n
+          }
         >
           Refund
         </Button>
@@ -54,7 +61,8 @@ export const Refund: React.FC<RefundProps> = ({ callRefund }) => {
 
             <AlertDialogBody>
               <Text mt={2} textAlign={"center"}>
-                By confirming this action, you will be refunded the amount you
+                By confirming this action, you will be refunded{" "}
+                {Number(weiToAlph(accountContributionAmount!))} ALPH
               </Text>
             </AlertDialogBody>
             <AlertDialogFooter>

@@ -1,13 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  IconButton,
-  Link,
-  useColorMode,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, IconButton, Link, useColorMode } from "@chakra-ui/react";
 import { AlephiumConnectButton } from "@alephium/web3-react";
 import { Account } from "@alephium/web3";
 import { sliceAddress } from "../../utils";
@@ -15,6 +7,18 @@ import NextLink from "next/link";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
 interface HeaderProps {}
+
+
+const NAV_MENU_LINKS = [
+  {
+    name: "Pools",
+    href: "/pools",
+  },
+  {
+    name: "Create",
+    href: "/pools/create",
+  }
+]
 
 export const Header: React.FC<HeaderProps> = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -35,16 +39,12 @@ export const Header: React.FC<HeaderProps> = () => {
             </Box>
           </Heading>
         </Box>
-        <HStack ml={10} spacing={8}>
-          <Link as={NextLink} href={"/"}>
-            Home
-          </Link>
-          <Link as={NextLink} href={"/pools"}>
-            Pools
-          </Link>
-          <Link as={NextLink} href={"/pools/create"}>
-            Create
-          </Link>
+        <HStack ml={10} spacing={8} as={"nav"}>
+          {NAV_MENU_LINKS.map((link) => (
+            <Link key={link.href} as={ NextLink } href={link.href}>
+              {link.name}
+            </Link>
+          ))}
         </HStack>
       </Flex>
       <Flex>

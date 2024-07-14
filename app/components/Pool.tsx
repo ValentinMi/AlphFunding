@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Contributor } from "../types";
 import { useWallet } from "@alephium/web3-react";
-import { Contributors } from "./Contributors";
 import {
   Box,
   Flex,
@@ -15,12 +14,14 @@ import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
 import {
   Contribute as ContributeTransaction,
   Refund as RefundTransaction,
+  Withdraw as WithdrawTransaction,
 } from "artifacts/ts/scripts";
 import { DUST_AMOUNT, hexToString, ONE_ALPH, web3 } from "@alephium/web3";
 import { Contribute } from "./Contribute";
 import { Countdown } from "./Countdown";
 import { weiToAlph } from "../utils";
 import { Refund } from "./Refund";
+import { Contributors } from "./Contributors";
 
 interface PoolProps {
   poolContractAddress: string;
@@ -134,7 +135,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   };
 
   const callRefund = async () => {
-    if (signer) {
+    if (signer && connectedAccountIsContributor) {
       await RefundTransaction.execute(signer, {
         initialFields: {
           pool: poolContractAddress,
@@ -144,6 +145,21 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
       await fetchContractFields();
       await fetchContributors();
+    }
+  };
+
+  const callWithdraw = async () => {
+    if (
+      signer &&
+      (account.address === contractFields.beneficiary ||
+        account.address === contractFields.creator)
+    ) {
+      await WithdrawTransaction.execute(signer, {
+        initialFields: {
+          pool: poolContractAddress,
+        },
+        attoAlphAmount: DUST_AMOUNT * 2n,
+      });
     }
   };
 
@@ -166,82 +182,93 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   }, [fetchContributors]);
 
   return (
-    <Flex px={3} direction={{ base: "column", lg: "row" }}>
-      <Flex direction={"column"} w={"50%"}>
-        <Heading>{contractFields.name}</Heading>
-        <Text mt={8} maxW={"90%"}>
-          {contractFields.description}
-        </Text>
-      </Flex>
-      <Flex direction={"column"} w={"50%"}>
-        <Flex
-          direction={"column"}
-          alignItems={"flex-start"}
-          justifyContent={"center"}
-        >
-          <Text>
-            Beneficiary:{" "}
-            <Link
-              isExternal
-              href={`https://explorer.alephium.org/addresses/${contractFields.beneficiary}`}
-            >
-              {contractFields.beneficiary}
-            </Link>
-          </Text>
-          <Text>
-            Pool creator:{" "}
-            <Link
-              isExternal
-              href={`https://explorer.alephium.org/addresses/${contractFields.creator}`}
-            >
-              {contractFields.creator}
-            </Link>
-          </Text>
-          <Text>
-            Contract address:{" "}
-            <Link
-              isExternal
-              href={`https://explorer.alephium.org/addresses/${poolContractAddress}`}
-            >
-              {poolContractAddress}
-            </Link>
+    <Flex direction={"column"}>
+      <Flex px={3} direction={{ base: "column", lg: "row" }}>
+        <Flex direction={"column"} w={"50%"}>
+          <Heading>{contractFields.name}</Heading>
+          <Text mt={8} maxW={"90%"}>
+            {contractFields.description}
           </Text>
         </Flex>
-        <Flex justifyContent={"space-between"} w={"100%"} mt={8}>
-          <Text>
-            {Number(weiToAlph(contractFields.totalCollected))} /{" "}
-            {Number(weiToAlph(contractFields.goal))} ALPH
-          </Text>
-          {!!contractFields.end && (
-            <Flex>
-              <Text mr={2}>ends in:</Text>{" "}
-              <Countdown targetDate={new Date(Number(contractFields.end))} />
-            </Flex>
-          )}
-        </Flex>
-        <Progress
-          hasStripe
-          size="lg"
-          colorScheme={"yellow"}
-          value={
-            (Number(contractFields.totalCollected) /
-              Number(contractFields.goal)) *
-            100
-          }
-          w={"100%"}
-          mt={2}
-        />
-        <HStack spacing={3}>
-          <Contribute
-            callContribute={callContribute}
-            connectedAccountIsContributor={connectedAccountIsContributor}
+        <Flex direction={"column"} w={"50%"}>
+          <Flex
+            direction={"column"}
+            alignItems={"flex-start"}
+            justifyContent={"center"}
+            mt={2}
+          >
+            <Text>
+              Beneficiary:{" "}
+              <Link
+                isExternal
+                href={`https://explorer.alephium.org/addresses/${contractFields.beneficiary}`}
+              >
+                {contractFields.beneficiary}
+              </Link>
+            </Text>
+            <Text mt={2}>
+              Pool creator:{" "}
+              <Link
+                isExternal
+                href={`https://explorer.alephium.org/addresses/${contractFields.creator}`}
+              >
+                {contractFields.creator}
+              </Link>
+            </Text>
+            <Text mt={2}>
+              Contract address:{" "}
+              <Link
+                isExternal
+                href={`https://explorer.alephium.org/addresses/${poolContractAddress}`}
+              >
+                {poolContractAddress}
+              </Link>
+            </Text>
+          </Flex>
+          <Flex justifyContent={"space-between"} w={"100%"} mt={8}>
+            <Text>
+              {Number(weiToAlph(contractFields.totalCollected))} /{" "}
+              {Number(weiToAlph(contractFields.goal))} ALPH
+            </Text>
+            {!!contractFields.end && (
+              <Flex>
+                <Text mr={2}>Contributions ends in:</Text>{" "}
+                <Countdown targetDate={new Date(Number(contractFields.end))} />
+              </Flex>
+            )}
+          </Flex>
+          <Progress
+            hasStripe
+            size="lg"
+            colorScheme={"yellow"}
+            value={
+              (Number(contractFields.totalCollected) /
+                Number(contractFields.goal)) *
+              100
+            }
+            w={"100%"}
+            mt={2}
           />
-          {connectedAccountIsContributor && <Refund callRefund={callRefund} />}
-        </HStack>
-        <Box mt={4}>
-          <Contributors contributors={contributors} />
-        </Box>
+          <HStack spacing={3}>
+            <Contribute
+              callContribute={callContribute}
+              connectedAccountIsContributor={connectedAccountIsContributor}
+            />
+            {connectedAccountIsContributor && (
+              <Refund
+                callRefund={callRefund}
+                accountContributionAmount={
+                  contributors.find((c) => c.address === account!.address)
+                    ?.amount
+                }
+              />
+            )}
+          </HStack>
+        </Flex>
       </Flex>
+      <Box mt={4}>
+        <Contributors contributors={contributors} />
+      </Box>
     </Flex>
   );
 };

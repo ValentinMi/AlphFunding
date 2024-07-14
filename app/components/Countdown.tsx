@@ -34,7 +34,7 @@ export const Countdown: React.FC<CountdownProps> = ({ targetDate }) => {
   return (
     <Box>
       <Text>
-        {timeRemaining.days} d {timeRemaining.hours} h
+        {timeRemaining.days}d {timeRemaining.hours}h
       </Text>
     </Box>
   );
