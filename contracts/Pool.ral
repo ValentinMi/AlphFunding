@@ -83,7 +83,7 @@ Contract Pool(
         emit Contribute(caller, amount, totalCollected)
     }
 
-    // Allows the beneficiary or owner to withdraw pool's gains to benificiary address
+    // Allows the beneficiary or owner to withdraw pool's gains to beneficiary address
     @using(assetsInContract = true)
     pub fn withdraw() -> () {
         let caller = callerAddress!()

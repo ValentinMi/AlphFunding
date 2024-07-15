@@ -5,3 +5,4 @@
 - [ ] Add a search bar to the Pools list
 - [ ] Enhance homepage UI
 - [ ] Write unit tests
+- [x] Write integration tests

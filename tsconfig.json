@@ -34,7 +34,8 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "node_modules/.pnpm/vitest@2.0.2_@types+node@20.14.10/node_modules/vitest/globals.d.ts"
   ],
   "exclude": [
     "node_modules"
