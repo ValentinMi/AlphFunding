@@ -15,18 +15,20 @@ import {
   NumberInputField,
   NumberInputStepper,
   Text,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
 
 interface ContributeProps {
   callContribute: (amount: number) => Promise<void>;
   connectedAccountIsContributor: boolean;
+  isEndReached: boolean;
 }
 
 export const Contribute: React.FC<ContributeProps> = ({
   callContribute,
   connectedAccountIsContributor,
+  isEndReached
 }) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -46,6 +48,7 @@ export const Contribute: React.FC<ContributeProps> = ({
           colorScheme={"green"}
           onClick={onOpen}
           isDisabled={connectionStatus !== "connected"}
+          disabled={isEndReached}
         >
           Contribute
         </Button>

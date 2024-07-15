@@ -12,26 +12,20 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
-import { weiToAlph } from "../utils";
 
-interface RefundProps {
-  callRefund: () => Promise<void>;
-  accountContributionAmount: bigint | undefined;
+interface WithdrawProps {
+  callWithdraw: () => Promise<void>;
   isEndReached: boolean;
 }
 
-export const Refund: React.FC<RefundProps> = ({
-  callRefund,
-  accountContributionAmount,
-  isEndReached
-}) => {
+export const Withdraw: React.FC<WithdrawProps> = ({ callWithdraw, isEndReached }) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const { connectionStatus } = useWallet();
 
   const handleRefund = async () => {
-    await callRefund();
+    await callWithdraw();
     onClose();
   };
 
@@ -39,13 +33,11 @@ export const Refund: React.FC<RefundProps> = ({
     <>
       <Box mt={4}>
         <Button
-          colorScheme={"orange"}
+          colorScheme={"blue"}
           onClick={onOpen}
-          isDisabled={
-            connectionStatus !== "connected" || accountContributionAmount === 0n || isEndReached
-          }
+          isDisabled={connectionStatus !== "connected" || !isEndReached}
         >
-          Refund
+          Withdraw
         </Button>
       </Box>
       <AlertDialog
@@ -58,13 +50,13 @@ export const Refund: React.FC<RefundProps> = ({
         <AlertDialogOverlay>
           <AlertDialogContent>
             <AlertDialogHeader fontSize="lg" fontWeight="bold">
-              Refund
+              Withdraw
             </AlertDialogHeader>
 
             <AlertDialogBody>
               <Text mt={2} textAlign={"center"}>
-                By confirming this action, you will be refunded{" "}
-                {Number(weiToAlph(accountContributionAmount!))} ALPH
+                By confirming this action, you will withdraw the total collected
+                to beneficiary address
               </Text>
             </AlertDialogBody>
             <AlertDialogFooter>
@@ -72,8 +64,8 @@ export const Refund: React.FC<RefundProps> = ({
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="orange" onClick={handleRefund} ml={3}>
-                Refund
+              <Button colorScheme={"blue"} onClick={handleRefund} ml={3}>
+                Withdraw
               </Button>
             </AlertDialogFooter>
           </AlertDialogContent>

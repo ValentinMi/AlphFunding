@@ -1,20 +1,12 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Contributor } from "../types";
 import { useWallet } from "@alephium/web3-react";
-import {
-  Box,
-  Flex,
-  Heading,
-  HStack,
-  Link,
-  Progress,
-  Text,
-} from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Link, Progress, Text } from "@chakra-ui/react";
 import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
 import {
   Contribute as ContributeTransaction,
   Refund as RefundTransaction,
-  Withdraw as WithdrawTransaction,
+  Withdraw as WithdrawTransaction
 } from "artifacts/ts/scripts";
 import { DUST_AMOUNT, hexToString, ONE_ALPH, web3 } from "@alephium/web3";
 import { Contribute } from "./Contribute";
@@ -22,6 +14,7 @@ import { Countdown } from "./Countdown";
 import { weiToAlph } from "../utils";
 import { Refund } from "./Refund";
 import { Contributors } from "./Contributors";
+import { Withdraw } from "./Withdraw";
 
 interface PoolProps {
   poolContractAddress: string;
@@ -41,6 +34,8 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
     description: "",
   });
   const { signer, account } = useWallet();
+
+  const isEndReached = Number(contractFields.end) < Date.now()
 
   const pool = PoolContract.at(poolContractAddress);
 
@@ -140,7 +135,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
         initialFields: {
           pool: poolContractAddress,
         },
-        attoAlphAmount: DUST_AMOUNT * 2n,
+        attoAlphAmount: DUST_AMOUNT,
       });
 
       await fetchContractFields();
@@ -158,7 +153,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
         initialFields: {
           pool: poolContractAddress,
         },
-        attoAlphAmount: DUST_AMOUNT * 2n,
+        attoAlphAmount: DUST_AMOUNT,
       });
     }
   };
@@ -253,15 +248,20 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
             <Contribute
               callContribute={callContribute}
               connectedAccountIsContributor={connectedAccountIsContributor}
+              isEndReached={isEndReached}
             />
             {connectedAccountIsContributor && (
               <Refund
                 callRefund={callRefund}
-                accountContributionAmount={
-                  contributors.find((c) => c.address === account!.address)
+                accountContributionAmount={account &&
+                  contributors.find((c) => c.address === account.address)
                     ?.amount
                 }
+                isEndReached={isEndReached}
               />
+            )}
+            {account && (account.address === contractFields.beneficiary || account.address === contractFields.creator) && (
+              <Withdraw callWithdraw={callWithdraw} isEndReached={isEndReached} />
             )}
           </HStack>
         </Flex>
