@@ -1,12 +1,21 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Contributor } from "../types";
-import { useWallet } from "@alephium/web3-react";
-import { Box, Flex, Heading, HStack, Link, Progress, Text } from "@chakra-ui/react";
+import { useTxStatus, useWallet } from "@alephium/web3-react";
+import {
+  Box,
+  Flex,
+  Heading,
+  HStack,
+  Link,
+  Progress,
+  Text,
+  useToast,
+} from "@chakra-ui/react";
 import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
 import {
   Contribute as ContributeTransaction,
   Refund as RefundTransaction,
-  Withdraw as WithdrawTransaction
+  Withdraw as WithdrawTransaction,
 } from "artifacts/ts/scripts";
 import {
   convertAlphAmountWithDecimals,
@@ -17,7 +26,6 @@ import {
 } from "@alephium/web3";
 import { Contribute } from "./Contribute";
 import { Countdown } from "./Countdown";
-import { weiToAlph } from "../utils";
 import { Refund } from "./Refund";
 import { Contributors } from "./Contributors";
 import { Withdraw } from "./Withdraw";
@@ -39,9 +47,12 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
     totalCollected: 0n,
     description: "",
   });
+  const [currentTxId, setCurrentTxId] = useState<string>("");
+  const { txStatus } = useTxStatus(currentTxId);
+
   const { signer, account } = useWallet();
 
-  const isEndReached = Number(contractFields.end) < Date.now()
+  const isEndReached = Number(contractFields.end) < Date.now();
 
   const pool = PoolContract.at(poolContractAddress);
 
@@ -119,7 +130,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
   const callContribute = async (amount: number) => {
     if (signer) {
-      await ContributeTransaction.execute(signer, {
+      const contributeResult = await ContributeTransaction.execute(signer, {
         initialFields: {
           pool: poolContractAddress,
           amount: convertAlphAmountWithDecimals(amount)!,
@@ -130,6 +141,8 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
           : convertAlphAmountWithDecimals(amount + 0.1)!,
       });
 
+      setCurrentTxId(contributeResult.txId);
+
       await fetchContractFields();
       await fetchContributors();
     }
@@ -137,12 +150,14 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
   const callRefund = async () => {
     if (signer && connectedAccountIsContributor) {
-      await RefundTransaction.execute(signer, {
+      const refundResult = await RefundTransaction.execute(signer, {
         initialFields: {
           pool: poolContractAddress,
         },
-        attoAlphAmount: DUST_AMOUNT,
+        attoAlphAmount: DUST_AMOUNT * 2n,
       });
+
+      setCurrentTxId(refundResult.txId);
 
       await fetchContractFields();
       await fetchContributors();
@@ -155,12 +170,14 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       (account.address === contractFields.beneficiary ||
         account.address === contractFields.creator)
     ) {
-      await WithdrawTransaction.execute(signer, {
+      const withdrawResult = await WithdrawTransaction.execute(signer, {
         initialFields: {
           pool: poolContractAddress,
         },
-        attoAlphAmount: DUST_AMOUNT,
+        attoAlphAmount: DUST_AMOUNT * 2n,
       });
+
+      setCurrentTxId(withdrawResult.txId);
     }
   };
 
@@ -181,6 +198,28 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   useEffect(() => {
     fetchContributors();
   }, [fetchContributors]);
+
+  const toast = useToast();
+
+  useEffect(() => {
+    if (txStatus) {
+      if (txStatus.type === "Confirmed") {
+        toast({
+          title: "Transaction confirmed",
+          status: "success",
+          duration: 5000,
+          isClosable: true,
+        });
+      } else if (txStatus.type === "MemPooled") {
+        toast({
+          title: currentTxId,
+          status: "info",
+          duration: 5000,
+          isClosable: true,
+        });
+      }
+    }
+  }, [txStatus]);
 
   return (
     <Flex direction={"column"}>
@@ -259,16 +298,22 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
             {connectedAccountIsContributor && (
               <Refund
                 callRefund={callRefund}
-                accountContributionAmount={account &&
+                accountContributionAmount={
+                  account &&
                   contributors.find((c) => c.address === account.address)
                     ?.amount
                 }
                 isEndReached={isEndReached}
               />
             )}
-            {account && (account.address === contractFields.beneficiary || account.address === contractFields.creator) && (
-              <Withdraw callWithdraw={callWithdraw} isEndReached={isEndReached} />
-            )}
+            {account &&
+              (account.address === contractFields.beneficiary ||
+                account.address === contractFields.creator) && (
+                <Withdraw
+                  callWithdraw={callWithdraw}
+                  isEndReached={isEndReached}
+                />
+              )}
           </HStack>
         </Flex>
       </Flex>
