@@ -17,6 +17,10 @@ const NAV_MENU_LINKS = [
   {
     name: "Create",
     href: "/pools/create",
+  },
+  {
+    name: "User guide",
+    href: "/guide",
   }
 ]
 
@@ -49,7 +53,7 @@ export const Header: React.FC<HeaderProps> = () => {
       </Flex>
       <Flex>
         <IconButton
-          aria-label={"toto"}
+          aria-label={colorMode === "light" ? "Dark mode" : "Light mode"}
           mr={3}
           icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
           onClick={toggleColorMode}
