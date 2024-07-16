@@ -5,3 +5,4 @@ deployments/
 .idea/
 prisma/pools.db
 prisma/pools.db-journal
+TODOS.md
