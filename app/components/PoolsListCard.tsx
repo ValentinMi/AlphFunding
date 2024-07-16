@@ -14,9 +14,9 @@ import {
 } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { Pool, PoolTypes } from "../../artifacts/ts";
-import { truncateText, weiToAlph } from "../utils";
+import { truncateText } from "../utils";
 import { Countdown } from "./Countdown";
-import { hexToString } from "@alephium/web3";
+import { hexToString, prettifyAttoAlphAmount } from "@alephium/web3";
 
 interface PoolsListCardProps {
   poolContractAddress: string;
@@ -80,15 +80,17 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
             <Flex direction={"column"} alignItems={"center"}>
               <CircularProgress
                 value={
-                  (Number(weiToAlph(contractFields.totalCollected)) /
-                    Number(weiToAlph(contractFields.goal))) *
+                  (Number(
+                    prettifyAttoAlphAmount(contractFields.totalCollected),
+                  ) /
+                    Number(prettifyAttoAlphAmount(contractFields.goal))) *
                   100
                 }
                 thickness="12px"
               />
               <Text mt={1}>
-                {Number(weiToAlph(contractFields.totalCollected))}/
-                {Number(weiToAlph(contractFields.goal))} ALPH
+                {Number(prettifyAttoAlphAmount(contractFields.totalCollected))}/
+                {Number(prettifyAttoAlphAmount(contractFields.goal))} ALPH
               </Text>
             </Flex>
           </Flex>

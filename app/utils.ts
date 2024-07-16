@@ -36,7 +36,3 @@ export const isDateAtLeastOneWeekInFuture = (dateString: string): boolean => {
 
   return inputDateInTimestamp - todayTimestamp >= oneWeekInSeconds;
 };
-
-export const weiToAlph = (wei: bigint): bigint => {
-  return BigInt(wei) / BigInt(1e18);
-};

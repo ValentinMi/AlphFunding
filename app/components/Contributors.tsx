@@ -9,7 +9,7 @@ import {
   VStack,
 } from "@chakra-ui/react";
 import { Contributor } from "../types";
-import { weiToAlph } from "../utils";
+import { prettifyAttoAlphAmount } from "@alephium/web3";
 
 interface ContributorsProps {
   contributors: Contributor[];
@@ -48,7 +48,9 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
                 {contributor.address}
               </Link>
             </Text>
-            <Text ml={6}>{Number(weiToAlph(contributor.amount))} ALPH</Text>
+            <Text ml={6}>
+              {prettifyAttoAlphAmount(contributor.amount)} ALPH
+            </Text>
           </Flex>
         ))}
       </VStack>

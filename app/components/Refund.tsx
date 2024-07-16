@@ -9,10 +9,10 @@ import {
   Box,
   Button,
   Text,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
-import { weiToAlph } from "../utils";
+import { prettifyAttoAlphAmount } from "@alephium/web3";
 
 interface RefundProps {
   callRefund: () => Promise<void>;
@@ -23,7 +23,7 @@ interface RefundProps {
 export const Refund: React.FC<RefundProps> = ({
   callRefund,
   accountContributionAmount,
-  isEndReached
+  isEndReached,
 }) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -42,7 +42,9 @@ export const Refund: React.FC<RefundProps> = ({
           colorScheme={"orange"}
           onClick={onOpen}
           isDisabled={
-            connectionStatus !== "connected" || accountContributionAmount === 0n || isEndReached
+            connectionStatus !== "connected" ||
+            accountContributionAmount === 0n ||
+            isEndReached
           }
         >
           Refund
@@ -64,7 +66,7 @@ export const Refund: React.FC<RefundProps> = ({
             <AlertDialogBody>
               <Text mt={2} textAlign={"center"}>
                 By confirming this action, you will be refunded{" "}
-                {Number(weiToAlph(accountContributionAmount!))} ALPH
+                {prettifyAttoAlphAmount(accountContributionAmount!)} ALPH
               </Text>
             </AlertDialogBody>
             <AlertDialogFooter>

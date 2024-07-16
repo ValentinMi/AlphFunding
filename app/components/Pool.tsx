@@ -8,7 +8,13 @@ import {
   Refund as RefundTransaction,
   Withdraw as WithdrawTransaction
 } from "artifacts/ts/scripts";
-import { DUST_AMOUNT, hexToString, ONE_ALPH, web3 } from "@alephium/web3";
+import {
+  convertAlphAmountWithDecimals,
+  DUST_AMOUNT,
+  hexToString,
+  prettifyAttoAlphAmount,
+  web3,
+} from "@alephium/web3";
 import { Contribute } from "./Contribute";
 import { Countdown } from "./Countdown";
 import { weiToAlph } from "../utils";
@@ -116,12 +122,12 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       await ContributeTransaction.execute(signer, {
         initialFields: {
           pool: poolContractAddress,
-          amount: ONE_ALPH * BigInt(amount),
+          amount: convertAlphAmountWithDecimals(amount)!,
         },
         // Add mapEntryDeposit (0.1 ALPH) if user never contributed to the pool
         attoAlphAmount: connectedAccountIsContributor
-          ? ONE_ALPH * BigInt(amount)
-          : ONE_ALPH * BigInt(amount) + ONE_ALPH / 10n,
+          ? convertAlphAmountWithDecimals(amount)
+          : convertAlphAmountWithDecimals(amount + 0.1)!,
       });
 
       await fetchContractFields();
@@ -222,8 +228,8 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
           </Flex>
           <Flex justifyContent={"space-between"} w={"100%"} mt={8}>
             <Text>
-              {Number(weiToAlph(contractFields.totalCollected))} /{" "}
-              {Number(weiToAlph(contractFields.goal))} ALPH
+              {prettifyAttoAlphAmount(contractFields.totalCollected)} /{" "}
+              {prettifyAttoAlphAmount(contractFields.goal)} ALPH
             </Text>
             {!!contractFields.end && (
               <Flex>
