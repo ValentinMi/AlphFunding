@@ -17,7 +17,9 @@ const deployPool: DeployFunction<Settings> = async (
         goal: 10n,
         creator: "19jG4CADXWwdaCntVn3qteRUVYmJQxqDHkqyUHERZKwWr",
         beneficiary: "19jG4CADXWwdaCntVn3qteRUVYmJQxqDHkqyUHERZKwWr",
-        totalCollected: 0n 
+        totalCollected: 0n,
+        name: "Pool",
+        description: "Pool description"
     }
   })
   console.log('Pool contract id: ' + result.contractInstance.contractId)
