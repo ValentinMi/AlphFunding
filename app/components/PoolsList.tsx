@@ -29,7 +29,14 @@ export const PoolsList: React.FC<PoolsListProps> = () => {
     );
 
   return (
-    <SimpleGrid columns={3} spacing={10}>
+    <SimpleGrid
+      columns={{
+        base: 1,
+        md: 2,
+        lg: 3,
+      }}
+      spacing={10}
+    >
       {pools.map((pool) => (
         <PoolsListCard
           key={pool.id}
