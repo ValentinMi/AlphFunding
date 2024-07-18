@@ -15,7 +15,7 @@ import {
   NumberInputField,
   NumberInputStepper,
   Text,
-  useDisclosure
+  useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
 
@@ -28,7 +28,7 @@ interface ContributeProps {
 export const Contribute: React.FC<ContributeProps> = ({
   callContribute,
   connectedAccountIsContributor,
-  isEndReached
+  isEndReached,
 }) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -84,12 +84,13 @@ export const Contribute: React.FC<ContributeProps> = ({
                 ALPH
               </Flex>
               <Text mt={2} textAlign={"center"}>
-                You can't refund your contribution if the goal is reached
+                You can't refund your contribution if the goal is reached of is
+                the end date is reached
               </Text>
               {!connectedAccountIsContributor && (
                 <Text color={"gray"} mt={4} textAlign={"center"}>
                   As it's your first contribution to this pool, 0.1 ALPH is
-                  charged for minimal contract deposit
+                  charged by the blockchain for minimal contract deposit
                 </Text>
               )}
             </AlertDialogBody>
