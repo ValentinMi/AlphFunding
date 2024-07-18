@@ -1,6 +1,5 @@
 import React from "react";
 import {
-  Box,
   Flex,
   Heading,
   Link,
@@ -17,9 +16,15 @@ interface ContributorsProps {
 export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
   if (contributors.length === 0) {
     return (
-      <Box w={"100%"} textAlign={"center"}>
+      <Flex
+        w={"100%"}
+        textAlign={"center"}
+        h={"200px"}
+        alignItems={"center"}
+        justifyContent={"center"}
+      >
         <Text>No contributors yet</Text>
-      </Box>
+      </Flex>
     );
   }
 
