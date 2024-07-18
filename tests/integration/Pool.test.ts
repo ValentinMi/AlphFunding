@@ -232,7 +232,7 @@ describe("Pool", async () => {
           end: BigInt(Date.now() + 500),
           creator: signer.address,
           beneficiary: beneficiary,
-          totalCollected: convertAlphAmountWithDecimals(100)!,
+          totalCollected: 0n,
         })
       ).contractInstance;
 
@@ -253,7 +253,7 @@ describe("Pool", async () => {
       });
 
       const beneficiaryBalance = await balanceOf(ALPH_TOKEN_ID, beneficiary);
-      assert(beneficiaryBalance === convertAlphAmountWithDecimals(100.1)); // add 0.1 ALPH for the minimal deposit transfer on destroy
+      assert(beneficiaryBalance === convertAlphAmountWithDecimals(100));
     });
 
     it("should withdraw the funds to beneficiary if the caller is the beneficiary", async () => {
@@ -272,7 +272,7 @@ describe("Pool", async () => {
           end: BigInt(Date.now() + 500),
           creator: ZERO_ADDRESS,
           beneficiary: beneficiarySigner.address,
-          totalCollected: convertAlphAmountWithDecimals(100)!,
+          totalCollected: 0n,
         })
       ).contractInstance;
 
@@ -298,48 +298,6 @@ describe("Pool", async () => {
       );
 
       assert(balanceOfBeneficiaryBefore < balanceOfBeneficiaryAfter);
-    });
-
-    it("should destroy the contract after withdraw", async () => {
-      const beneficiary = randomP2PKHAddress();
-
-      pool = (
-        await deployPool({
-          ...defaultInitialFields,
-          end: BigInt(Date.now() + 500),
-          creator: signer.address,
-          beneficiary: beneficiary,
-          totalCollected: convertAlphAmountWithDecimals(100)!,
-        })
-      ).contractInstance;
-
-      await Contribute.execute(signer, {
-        initialFields: {
-          pool: pool.address,
-          amount: convertAlphAmountWithDecimals(100)!,
-        },
-        attoAlphAmount: convertAlphAmountWithDecimals(101)!, // +1 for map deposit
-      });
-
-      await sleep(600);
-
-      await Withdraw.execute(signer, {
-        initialFields: {
-          pool: pool.address,
-        },
-      });
-
-      try {
-        await Contribute.execute(signer, {
-          initialFields: {
-            pool: pool.address,
-            amount: convertAlphAmountWithDecimals(100)!,
-          },
-          attoAlphAmount: convertAlphAmountWithDecimals(101), // +1 for map deposit
-        });
-      } catch (e: any) {
-        expect(e.message).toContain(`Contract ${pool.address} does not exist`);
-      }
     });
   });
 });
