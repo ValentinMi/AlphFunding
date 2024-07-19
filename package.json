@@ -12,7 +12,8 @@
     "next": "^14.2.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
-    "react-hook-form": "^7.52.1"
+    "react-hook-form": "^7.52.1",
+    "react-icons": "^5.2.1"
   },
   "devDependencies": {
     "@alephium/web3-test": "^1.2.1",

@@ -6,9 +6,12 @@ import {
   Flex,
   Heading,
   HStack,
+  Icon,
   Link,
   Progress,
+  Tag,
   Text,
+  useClipboard,
   useToast,
 } from "@chakra-ui/react";
 import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
@@ -29,6 +32,7 @@ import { Countdown } from "./Countdown";
 import { Refund } from "./Refund";
 import { Contributors } from "./Contributors";
 import { Withdraw } from "./Withdraw";
+import { MdOutlineContentCopy } from "react-icons/md";
 
 interface PoolProps {
   poolContractAddress: string;
@@ -53,6 +57,9 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const { signer, account } = useWallet();
 
   const isEndReached = Number(contractFields.end) < Date.now();
+
+  const { onCopy, setValue } = useClipboard("");
+  const toast = useToast();
 
   const pool = PoolContract.at(poolContractAddress);
 
@@ -181,6 +188,17 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
     }
   };
 
+  const handleCopy = (value: string) => {
+    setValue(value);
+    onCopy();
+    toast({
+      title: "Copied !",
+      status: "success",
+      duration: 2000,
+      isClosable: true,
+    });
+  };
+
   useEffect(() => {
     if (account) {
       setConnectedAccountIsContributor(
@@ -199,8 +217,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
     fetchContributors();
   }, [fetchContributors]);
 
-  const toast = useToast();
-
   useEffect(() => {
     if (txStatus) {
       if (txStatus.type === "Confirmed") {
@@ -213,7 +229,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       } else if (txStatus.type === "MemPooled") {
         toast({
           title: currentTxId,
-          status: "info",
+          status: "loading",
           duration: 5000,
           isClosable: true,
         });
@@ -240,28 +256,25 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
             <Text>
               Beneficiary:{" "}
               <Link
-                isExternal
-                href={`https://explorer.alephium.org/addresses/${contractFields.beneficiary}`}
+                as={"span"}
+                onClick={() => handleCopy(contractFields.beneficiary)}
               >
-                {contractFields.beneficiary}
+                {contractFields.beneficiary} <Icon as={MdOutlineContentCopy} />
               </Link>
             </Text>
             <Text mt={2}>
               Pool creator:{" "}
               <Link
-                isExternal
-                href={`https://explorer.alephium.org/addresses/${contractFields.creator}`}
+                as={"span"}
+                onClick={() => handleCopy(contractFields.creator)}
               >
-                {contractFields.creator}
+                {contractFields.creator} <Icon as={MdOutlineContentCopy} />
               </Link>
             </Text>
             <Text mt={2}>
               Contract address:{" "}
-              <Link
-                isExternal
-                href={`https://explorer.alephium.org/addresses/${poolContractAddress}`}
-              >
-                {poolContractAddress}
+              <Link as={"span"} onClick={() => handleCopy(poolContractAddress)}>
+                {poolContractAddress} <Icon as={MdOutlineContentCopy} />
               </Link>
             </Text>
           </Flex>
@@ -270,9 +283,13 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
               {prettifyAttoAlphAmount(contractFields.totalCollected)} /{" "}
               {prettifyAttoAlphAmount(contractFields.goal)} ALPH
             </Text>
-            {!!contractFields.end && (
-              <Flex>
-                <Text mr={2}>Contributions ends in:</Text>{" "}
+            {isEndReached ? (
+              <Tag size={"lg"} variant="solid" colorScheme="teal">
+                Finished
+              </Tag>
+            ) : (
+              <Flex ml={4}>
+                <Text mr={2}>ends in:</Text>{" "}
                 <Countdown targetDate={new Date(Number(contractFields.end))} />
               </Flex>
             )}
@@ -290,12 +307,14 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
             mt={2}
           />
           <HStack spacing={3}>
-            <Contribute
-              callContribute={callContribute}
-              connectedAccountIsContributor={connectedAccountIsContributor}
-              isEndReached={isEndReached}
-            />
-            {connectedAccountIsContributor && (
+            {!isEndReached && (
+              <Contribute
+                callContribute={callContribute}
+                connectedAccountIsContributor={connectedAccountIsContributor}
+                isEndReached={isEndReached}
+              />
+            )}
+            {connectedAccountIsContributor && !isEndReached && (
               <Refund
                 callRefund={callRefund}
                 accountContributionAmount={
