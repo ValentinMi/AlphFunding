@@ -42,12 +42,37 @@ export default function Page() {
           </Text>
           :
         </Text>
-        <OrderedList mt={2}>
-          <ListItem>Name: The name of the pool</ListItem>
-          <ListItem>Description: A description of the pool</ListItem>
-          <ListItem>Beneficiary: The address of the beneficiary</ListItem>
-          <ListItem>Goal: The goal amount to reach</ListItem>
-          <ListItem>End: The end date of the pool (1 week minimum)</ListItem>
+        <OrderedList mt={2} pl={4}>
+          <ListItem>
+            <Text as={"span"} fontWeight={"bold"}>
+              Name
+            </Text>
+            : The name of the pool
+          </ListItem>
+          <ListItem>
+            <Text as={"span"} fontWeight={"bold"}>
+              Description
+            </Text>
+            : A description of the pool
+          </ListItem>
+          <ListItem>
+            <Text as={"span"} fontWeight={"bold"}>
+              Beneficiary
+            </Text>
+            : The address of the beneficiary
+          </ListItem>
+          <ListItem>
+            <Text as={"span"} fontWeight={"bold"}>
+              Goal
+            </Text>
+            : The goal amount to reach
+          </ListItem>
+          <ListItem>
+            <Text as={"span"} fontWeight={"bold"}>
+              End
+            </Text>
+            : The end date of the pool (1 week minimum)
+          </ListItem>
         </OrderedList>
         <Text mt={2}>
           After the form is filled, click on the "Submit" button, then your
