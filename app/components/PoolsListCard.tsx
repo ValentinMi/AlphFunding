@@ -10,6 +10,7 @@ import {
   Heading,
   Link,
   Stack,
+  Tag,
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
@@ -58,6 +59,8 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
     setContractFields(fields);
   };
 
+  const isFinished = new Date(Number(contractFields.end)) < new Date();
+
   useEffect(() => {
     fetchContractFields();
   }, [fetchContractFields]);
@@ -77,7 +80,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                 {truncateText(contractFields.description, 150)}
               </Text>
             </Box>
-            <Flex direction={"column"} alignItems={"center"}>
+            <Flex direction={"column"} alignItems={"flex-end"}>
               <CircularProgress
                 value={
                   (Number(
@@ -88,9 +91,9 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                 }
                 thickness="12px"
               />
-              <Text mt={1}>
-                {Number(prettifyAttoAlphAmount(contractFields.totalCollected))}/
-                {Number(prettifyAttoAlphAmount(contractFields.goal))} ALPH
+              <Text mt={1} textAlign={"right"}>
+                {prettifyAttoAlphAmount(contractFields.totalCollected)}/
+                {prettifyAttoAlphAmount(contractFields.goal)} ALPH
               </Text>
             </Flex>
           </Flex>
@@ -106,7 +109,11 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                 View
               </Button>
             </Link>
-            {!!contractFields.end && (
+            {isFinished ? (
+              <Tag size={"lg"} variant="solid" colorScheme="teal">
+                Finished
+              </Tag>
+            ) : (
               <Flex ml={4}>
                 <Text mr={2}>ends in:</Text>{" "}
                 <Countdown targetDate={new Date(Number(contractFields.end))} />
