@@ -84,7 +84,7 @@ export const Contribute: React.FC<ContributeProps> = ({
                 ALPH
               </Flex>
               <Text mt={2} textAlign={"center"}>
-                You can't refund your contribution if the goal is reached of is
+                You can't refund your contribution if the goal is reached or if
                 the end date is reached
               </Text>
               {!connectedAccountIsContributor && (
