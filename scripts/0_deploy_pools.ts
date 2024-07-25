@@ -3,7 +3,11 @@ import { faker } from "@faker-js/faker";
 import { Settings } from "../alephium.config";
 import { Deployer, DeployFunction } from "@alephium/cli";
 import { PrismaClient } from "@prisma/client";
-import { convertAlphAmountWithDecimals, stringToHex } from "@alephium/web3";
+import {
+  convertAlphAmountWithDecimals,
+  stringToHex,
+  ZERO_ADDRESS,
+} from "@alephium/web3";
 
 const NUMBER_OF_POOLS = 50;
 
@@ -56,9 +60,13 @@ function createPools() {
       goal: convertAlphAmountWithDecimals(goal)!,
       name: stringToHex(faker.company.name()),
       description: stringToHex(faker.lorem.paragraph(3)),
-      creator: "19jG4CADXWwdaCntVn3qteRUVYmJQxqDHkqyUHERZKwWr",
-      beneficiary: "1ABRcKYMz6wDX5p1A48m1kZcYLHq2dNEAcqJsKp6w1J2i",
+      beneficiary: process.env.BENEFIARY_ADDRESS || ZERO_ADDRESS,
+      creator: process.env.CREATOR_ADDRESS || ZERO_ADDRESS,
     });
+
+    // Edit the first pool to be finished
+    pools[0].end = BigInt(faker.date.past().getTime());
+    pools[0].totalCollected = pools[0].goal;
   }
 }
 
