@@ -190,7 +190,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   };
 
   const handleCopy = (value: string) => {
-    setValue(value);
+    setValue((c) => value);
     onCopy();
     toast({
       title: "Copied !",
