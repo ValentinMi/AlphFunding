@@ -70,18 +70,22 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
       direction={{ base: "column", sm: "row" }}
       overflow="hidden"
       variant="outline"
+      boxShadow={"md"}
+      borderColor={"yellow.500"}
+      borderWidth={1}
     >
       <Stack w={"100%"}>
         <CardBody>
           <Flex w={"100%"} justifyContent={"space-between"}>
             <Box w={"80%"}>
               <Heading size="md">{contractFields.name}</Heading>
-              <Text py="2">
+              <Text py="2" mt={2}>
                 {truncateText(contractFields.description, 150)}
               </Text>
             </Box>
             <Flex direction={"column"} alignItems={"flex-end"}>
               <CircularProgress
+                color={"yellow.500"}
                 value={
                   (Number(
                     prettifyAttoAlphAmount(contractFields.totalCollected),
@@ -92,7 +96,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                 thickness="12px"
               />
               <Text mt={1} textAlign={"right"}>
-                {prettifyAttoAlphAmount(contractFields.totalCollected)}/
+                {prettifyAttoAlphAmount(contractFields.totalCollected)} /{" "}
                 {prettifyAttoAlphAmount(contractFields.goal)} ALPH
               </Text>
             </Flex>
@@ -105,7 +109,12 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
             w={"100%"}
           >
             <Link as={NextLink} href={`/pools/${poolContractAddress}`}>
-              <Button variant="solid" colorScheme="blue">
+              <Button
+                variant="outline"
+                colorScheme="yellow"
+                color={"yellow.500"}
+                borderColor={"yellow.500"}
+              >
                 View
               </Button>
             </Link>
