@@ -9,20 +9,21 @@ import {
   Box,
   Button,
   Text,
-  useDisclosure
+  Tooltip,
+  useDisclosure,
 } from "@chakra-ui/react";
-import { useWallet } from "@alephium/web3-react";
 
 interface WithdrawProps {
   callWithdraw: () => Promise<void>;
   isEndReached: boolean;
 }
 
-export const Withdraw: React.FC<WithdrawProps> = ({ callWithdraw, isEndReached }) => {
+export const Withdraw: React.FC<WithdrawProps> = ({
+  callWithdraw,
+  isEndReached,
+}) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
-
-  const { connectionStatus } = useWallet();
 
   const handleRefund = async () => {
     await callWithdraw();
@@ -32,13 +33,15 @@ export const Withdraw: React.FC<WithdrawProps> = ({ callWithdraw, isEndReached }
   return (
     <>
       <Box mt={4}>
-        <Button
-          colorScheme={"blue"}
-          onClick={onOpen}
-          isDisabled={connectionStatus !== "connected" || !isEndReached}
-        >
-          Withdraw
-        </Button>
+        <Tooltip label={!isEndReached && "End is not reached"}>
+          <Button
+            colorScheme={"blue"}
+            onClick={onOpen}
+            isDisabled={!isEndReached}
+          >
+            Withdraw
+          </Button>
+        </Tooltip>
       </Box>
       <AlertDialog
         isOpen={isOpen}

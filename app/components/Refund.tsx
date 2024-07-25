@@ -9,6 +9,7 @@ import {
   Box,
   Button,
   Text,
+  Tooltip,
   useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
@@ -18,12 +19,14 @@ interface RefundProps {
   callRefund: () => Promise<void>;
   accountContributionAmount: bigint | undefined;
   isEndReached: boolean;
+  isGoalReached: boolean;
 }
 
 export const Refund: React.FC<RefundProps> = ({
   callRefund,
   accountContributionAmount,
   isEndReached,
+  isGoalReached,
 }) => {
   const cancelRef = useRef();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -38,17 +41,38 @@ export const Refund: React.FC<RefundProps> = ({
   return (
     <>
       <Box mt={4}>
-        <Button
-          colorScheme={"orange"}
-          onClick={onOpen}
+        <Tooltip
+          label={
+            connectionStatus !== "connected"
+              ? "Connect your wallet"
+              : accountContributionAmount === 0n
+                ? "You have no contribution in this pool"
+                : isEndReached
+                  ? "Pool has ended"
+                  : isGoalReached
+                    ? "Goal is reached"
+                    : null
+          }
           isDisabled={
-            connectionStatus !== "connected" ||
-            accountContributionAmount === 0n ||
-            isEndReached
+            !isEndReached &&
+            !isGoalReached &&
+            accountContributionAmount !== 0n &&
+            connectionStatus === "connected"
           }
         >
-          Refund
-        </Button>
+          <Button
+            colorScheme={"orange"}
+            onClick={onOpen}
+            isDisabled={
+              connectionStatus !== "connected" ||
+              accountContributionAmount === 0n ||
+              isEndReached ||
+              isGoalReached
+            }
+          >
+            Refund
+          </Button>
+        </Tooltip>
       </Box>
       <AlertDialog
         isOpen={isOpen}
@@ -74,7 +98,12 @@ export const Refund: React.FC<RefundProps> = ({
               <Button ref={cancelRef} onClick={onClose}>
                 Cancel
               </Button>
-              <Button colorScheme="orange" onClick={handleRefund} ml={3}>
+              <Button
+                colorScheme="orange"
+                onClick={handleRefund}
+                ml={3}
+                isDisabled={isGoalReached}
+              >
                 Refund
               </Button>
             </AlertDialogFooter>

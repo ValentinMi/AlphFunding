@@ -57,6 +57,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const { signer, account } = useWallet();
 
   const isEndReached = Number(contractFields.end) < Date.now();
+  const isGoalReached = contractFields.totalCollected >= contractFields.goal;
 
   const { onCopy, setValue } = useClipboard("");
   const toast = useToast();
@@ -323,6 +324,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
                     ?.amount
                 }
                 isEndReached={isEndReached}
+                isGoalReached={isGoalReached}
               />
             )}
             {account &&
