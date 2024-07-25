@@ -5,6 +5,7 @@ import {
   Link,
   StackDivider,
   Text,
+  useColorMode,
   VStack,
 } from "@chakra-ui/react";
 import { Contributor } from "../types";
@@ -14,6 +15,8 @@ interface ContributorsProps {
   contributors: Contributor[];
 }
 export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
+  const { colorMode } = useColorMode();
+
   if (contributors.length === 0) {
     return (
       <Flex
@@ -32,7 +35,9 @@ export const Contributors: React.FC<ContributorsProps> = ({ contributors }) => {
     <Flex direction={"column"} alignItems={"center"} mt={8}>
       <Heading as={"h2"}>Contributors</Heading>
       <VStack
-        border={"1px solid white"}
+        borderWidth={1}
+        borderStyle={"solid"}
+        borderColor={colorMode === "light" ? "black" : "white"}
         py={2}
         px={1}
         divider={<StackDivider borderColor="gray.200" />}
