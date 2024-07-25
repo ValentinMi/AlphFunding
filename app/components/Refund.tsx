@@ -13,7 +13,10 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { useWallet } from "@alephium/web3-react";
-import { prettifyAttoAlphAmount } from "@alephium/web3";
+import {
+  convertAlphAmountWithDecimals,
+  prettifyAttoAlphAmount,
+} from "@alephium/web3";
 
 interface RefundProps {
   callRefund: () => Promise<void>;
@@ -90,7 +93,11 @@ export const Refund: React.FC<RefundProps> = ({
             <AlertDialogBody>
               <Text mt={2} textAlign={"center"}>
                 By confirming this action, you will be refunded{" "}
-                {prettifyAttoAlphAmount(accountContributionAmount!)} ALPH
+                {prettifyAttoAlphAmount(
+                  accountContributionAmount ||
+                    convertAlphAmountWithDecimals(1)!,
+                )}{" "}
+                ALPH
               </Text>
             </AlertDialogBody>
             <AlertDialogFooter>
