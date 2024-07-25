@@ -10,7 +10,7 @@ const configuration: Configuration<Settings> = {
     devnet: {
       nodeUrl: "http://localhost:22973",
       privateKeys: [
-        "f704ad9b0d1918c5f080d24227b1327b3ec4010efc6bac06643f6872aacd964d", // group 0
+        "a642942e67258589cd2b1822c631506632db5a12aabcf413604e785300d762a5", // group 0
       ],
       settings: defaultSettings,
       networkId: 4,
