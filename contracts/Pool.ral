@@ -11,6 +11,7 @@ Contract Pool(
     mapping[Address, U256] contributions
 
     event Contribute(contributor: Address, amount: U256, totalCollected: U256)
+    event Refund(contributor: Address, amount: U256, totalCollected: U256)
 
     enum ErrorCodes {
         CollectIsFinished = 0
@@ -112,6 +113,8 @@ Contract Pool(
         totalCollected = totalCollected - contributionAmount
 
         transferTokenFromSelf!(caller, ALPH, contributionAmount)
+
+        emit Refund(caller, contributionAmount, totalCollected)
     }
     
 }
