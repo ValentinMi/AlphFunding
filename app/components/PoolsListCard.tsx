@@ -72,7 +72,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
       variant="outline"
       boxShadow={"md"}
       borderColor={"yellow.500"}
-      borderWidth={1}
+      borderWidth={2}
       backgroundColor={"rgba(255, 255, 255, 0.1)"}
     >
       <Stack w={"100%"}>
