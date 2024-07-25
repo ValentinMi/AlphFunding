@@ -11,7 +11,6 @@ import {
   Progress,
   Tag,
   Text,
-  useClipboard,
   useToast,
 } from "@chakra-ui/react";
 import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
@@ -59,7 +58,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const isEndReached = Number(contractFields.end) < Date.now();
   const isGoalReached = contractFields.totalCollected >= contractFields.goal;
 
-  const { onCopy, setValue } = useClipboard("");
   const toast = useToast();
 
   const pool = PoolContract.at(poolContractAddress);
@@ -190,8 +188,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   };
 
   const handleCopy = (value: string) => {
-    setValue((c) => value);
-    onCopy();
+    navigator.clipboard.writeText(value);
     toast({
       title: "Copied !",
       status: "success",
