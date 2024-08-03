@@ -12,8 +12,52 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
+import { BiDonateHeart } from "react-icons/bi";
+import { VscWorkspaceTrusted } from "react-icons/vsc";
+import { LandingPageBenefit } from "./components/LandingPageBenefit";
 
 export default function Page() {
+  const benefits = [
+    {
+      title: "Create Donation Pools",
+      description:
+        "With AlphPool, you can easily create donation pools for causes you care about. Whether you're raising funds for a community project, supporting a charity, or helping someone in need, our platform provides a straightforward and user-friendly interface to set up and manage your donation campaigns.",
+      icon: BiDonateHeart,
+      CTA: (
+        <Link as={NextLink} href="/pools/create">
+          <Button
+            colorScheme={"yellow"}
+            size={"lg"}
+            variant={"outline"}
+            color={"yellow.500"}
+            borderColor={"yellow.500"}
+          >
+            Create a pool
+          </Button>
+        </Link>
+      ),
+    },
+    {
+      title: "Contribute with Confidence",
+      description:
+        "Contributors can trust that their donations are handled securely and transparently thanks to the robust features of the Alephium blockchain. Every transaction is recorded and verifiable, ensuring that your contributions reach their intended destination without any intermediary interference.",
+      icon: VscWorkspaceTrusted,
+      CTA: (
+        <Link as={NextLink} href="/pools">
+          <Button
+            colorScheme={"yellow"}
+            size={"lg"}
+            variant={"outline"}
+            color={"yellow.500"}
+            borderColor={"yellow.500"}
+          >
+            View pools
+          </Button>
+        </Link>
+      ),
+    },
+  ];
+
   return (
     <Layout>
       <Flex w={"100%"} alignItems={"center"} direction={"column"}>
@@ -64,30 +108,11 @@ export default function Page() {
           </HStack>
         </Flex>
         <Divider mt={5} />
-        <Box h={"90vh"}>
-          <Container>
-            <Heading as={"h2"} mt={5}>
-              Create Donation Pools
-            </Heading>
-            <Text mt={3}>
-              With AlphPool, you can easily create donation pools for causes you
-              care about. Whether you're raising funds for a community project,
-              supporting a charity, or helping someone in need, our platform
-              provides a straightforward and user-friendly interface to set up
-              and manage your donation campaigns.
-            </Text>
-            <Heading as={"h2"} mt={10}>
-              Contribute with Confidence
-            </Heading>
-            <Text mt={3}>
-              Contributors can trust that their donations are handled securely
-              and transparently thanks to the robust features of the Alephium
-              blockchain. Every transaction is recorded and verifiable, ensuring
-              that your contributions reach their intended destination without
-              any intermediary interference.
-            </Text>
-          </Container>
-        </Box>
+        <Flex h={"90vh"} direction={"column"} justifyContent={"space-around"}>
+          {benefits.map((benef, index) => (
+            <LandingPageBenefit index={index} {...benef} />
+          ))}
+        </Flex>
       </Flex>
     </Layout>
   );
