@@ -91,7 +91,7 @@ Contract Pool(
         checkCaller!(caller == beneficiary || caller == creator, ErrorCodes.NotTheBeneficiary)
 
         let blockTimeStamp = blockTimeStamp!()
-        assert!(blockTimeStamp >= end && totalCollected >= goal, ErrorCodes.CollectNotFinished)
+        assert!(blockTimeStamp >= end, ErrorCodes.CollectNotFinished)
 
         transferTokenFromSelf!(beneficiary, ALPH, totalCollected)
     }
