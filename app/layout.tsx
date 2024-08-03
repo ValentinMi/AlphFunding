@@ -2,6 +2,9 @@
 import { ChakraProvider } from "@chakra-ui/react";
 import { AlephiumWalletProvider } from "@alephium/web3-react";
 import { NodeProvider, web3 } from "@alephium/web3";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient();
 
 export default function RootLayout({
   children,
@@ -21,7 +24,9 @@ export default function RootLayout({
             network="devnet"
             addressGroup={0}
           >
-            {children}
+            <QueryClientProvider client={queryClient}>
+              {children}
+            </QueryClientProvider>
           </AlephiumWalletProvider>
         </ChakraProvider>
       </body>

@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { Contributor } from "../types";
+import React, { useEffect, useState } from "react";
 import { useTxStatus, useWallet } from "@alephium/web3-react";
 import {
   Box,
@@ -24,7 +23,6 @@ import {
   DUST_AMOUNT,
   hexToString,
   prettifyAttoAlphAmount,
-  web3,
 } from "@alephium/web3";
 import { Contribute } from "./Contribute";
 import { Countdown } from "./Countdown";
@@ -32,13 +30,13 @@ import { Refund } from "./Refund";
 import { Contributors } from "./Contributors";
 import { Withdraw } from "./Withdraw";
 import { MdOutlineContentCopy } from "react-icons/md";
+import { useContributors } from "../hooks/useContributors";
 
 interface PoolProps {
   poolContractAddress: string;
 }
 
 export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
-  const [contributors, setContributors] = useState<Contributor[]>([]);
   const [connectedAccountIsContributor, setConnectedAccountIsContributor] =
     useState<boolean>(false);
   const [contractFields, setContractFields] = useState<PoolTypes.Fields>({
@@ -54,6 +52,9 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const { txStatus } = useTxStatus(currentTxId);
 
   const { signer, account } = useWallet();
+
+  const { contributors, refetchContributors } =
+    useContributors(poolContractAddress);
 
   const isEndReached = Number(contractFields.end) < Date.now();
   const isGoalReached = contractFields.totalCollected >= contractFields.goal;
@@ -95,45 +96,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
     }
   };
 
-  const fetchContributors = useCallback(async () => {
-    const nodeProvider = web3.getCurrentNodeProvider();
-    if (nodeProvider) {
-      const contributors =
-        await nodeProvider.events.getEventsContractContractaddress(
-          poolContractAddress,
-          {
-            start: 0,
-          },
-        );
-
-      const contributorsMap = new Map();
-
-      contributors.events.forEach((log: any) => {
-        const address = log.fields[0].value as string;
-        const amount = BigInt(log.fields[1].value); // Ensure the amount is a bigint
-
-        if (contributorsMap.has(address)) {
-          // If the address is already in the map, sum the amounts
-          contributorsMap.set(address, contributorsMap.get(address) + amount);
-        } else {
-          // If the address is not in the map, add it
-          contributorsMap.set(address, amount);
-        }
-      });
-
-      // Convert the map back to an array of objects
-      const contributorsArray = Array.from(
-        contributorsMap,
-        ([address, amount]) => ({
-          address,
-          amount,
-        }),
-      );
-
-      setContributors(contributorsArray);
-    }
-  }, []);
-
   const callContribute = async (amount: number) => {
     if (signer) {
       const contributeResult = await ContributeTransaction.execute(signer, {
@@ -150,7 +112,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       setCurrentTxId(contributeResult.txId);
 
       await fetchContractFields();
-      await fetchContributors();
+      await refetchContributors();
     }
   };
 
@@ -166,7 +128,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       setCurrentTxId(refundResult.txId);
 
       await fetchContractFields();
-      await fetchContributors();
+      await refetchContributors();
     }
   };
 
@@ -210,10 +172,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   useEffect(() => {
     fetchContractFields();
   }, []);
-
-  useEffect(() => {
-    fetchContributors();
-  }, [fetchContributors]);
 
   useEffect(() => {
     if (txStatus) {
@@ -317,8 +275,9 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
                 callRefund={callRefund}
                 accountContributionAmount={
                   account &&
-                  contributors.find((c) => c.address === account.address)
-                    ?.amount
+                  Array.from(contributors).find(
+                    (c) => c.address === account.address,
+                  )?.amount
                 }
                 isEndReached={isEndReached}
                 isGoalReached={isGoalReached}
