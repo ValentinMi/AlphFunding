@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   Box,
   Button,
@@ -14,10 +14,11 @@ import {
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { Pool, PoolTypes } from "../../artifacts/ts";
+import { PoolTypes } from "../../artifacts/ts";
 import { truncateText } from "../utils";
 import { Countdown } from "./Countdown";
-import { hexToString, prettifyAttoAlphAmount } from "@alephium/web3";
+import { prettifyAttoAlphAmount } from "@alephium/web3";
+import { usePoolFields } from "../hooks/usePool";
 
 interface PoolsListCardProps {
   poolContractAddress: string;
@@ -28,42 +29,9 @@ type PoolListCardFields = Omit<PoolTypes.Fields, "beneficiary" | "creator">;
 export const PoolsListCard: React.FC<PoolsListCardProps> = ({
   poolContractAddress,
 }) => {
-  const [contractFields, setContractFields] = useState<PoolListCardFields>({
-    totalCollected: 0n,
-    end: 0n,
-    goal: 0n,
-    name: "",
-    description: "",
-  });
-
-  const pool = Pool.at(poolContractAddress);
-
-  const fetchContractFields = async () => {
-    const fields: PoolListCardFields = {} as any;
-
-    let data: any = await pool.view.getTotalCollected();
-    fields.totalCollected = data.returns;
-
-    data = await pool.view.getEnd();
-    fields.end = data.returns;
-
-    data = await pool.view.getGoal();
-    fields.goal = data.returns;
-
-    data = await pool.view.getName();
-    fields.name = hexToString(data.returns);
-
-    data = await pool.view.getDescription();
-    fields.description = hexToString(data.returns);
-
-    setContractFields(fields);
-  };
+  const { data: contractFields } = usePoolFields(poolContractAddress);
 
   const isFinished = new Date(Number(contractFields.end)) < new Date();
-
-  useEffect(() => {
-    fetchContractFields();
-  }, [fetchContractFields]);
 
   return (
     <Card

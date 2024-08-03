@@ -12,7 +12,6 @@ import {
   Text,
   useToast,
 } from "@chakra-ui/react";
-import { Pool as PoolContract, PoolTypes } from "../../artifacts/ts";
 import {
   Contribute as ContributeTransaction,
   Refund as RefundTransaction,
@@ -21,7 +20,6 @@ import {
 import {
   convertAlphAmountWithDecimals,
   DUST_AMOUNT,
-  hexToString,
   prettifyAttoAlphAmount,
 } from "@alephium/web3";
 import { Contribute } from "./Contribute";
@@ -31,23 +29,16 @@ import { Contributors } from "./Contributors";
 import { Withdraw } from "./Withdraw";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { useContributors } from "../hooks/useContributors";
+import { usePoolFields } from "../hooks/usePool";
 
 interface PoolProps {
   poolContractAddress: string;
 }
 
 export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
+  const { data: contractFields } = usePoolFields(poolContractAddress);
   const [connectedAccountIsContributor, setConnectedAccountIsContributor] =
     useState<boolean>(false);
-  const [contractFields, setContractFields] = useState<PoolTypes.Fields>({
-    name: "",
-    beneficiary: "",
-    creator: "",
-    goal: 10n,
-    end: 0n,
-    totalCollected: 0n,
-    description: "",
-  });
   const [currentTxId, setCurrentTxId] = useState<string>("");
   const { txStatus } = useTxStatus(currentTxId);
 
@@ -60,41 +51,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const isGoalReached = contractFields.totalCollected >= contractFields.goal;
 
   const toast = useToast();
-
-  const pool = PoolContract.at(poolContractAddress);
-
-  const fetchContractFields = async () => {
-    try {
-      const fields: PoolTypes.Fields = {} as PoolTypes.Fields;
-
-      let data: any;
-
-      data = await pool.view.getName();
-      fields.name = hexToString(data.returns);
-
-      data = await pool.view.getDescription();
-      fields.description = hexToString(data.returns);
-
-      data = await pool.view.getBeneficiary();
-      fields.beneficiary = data.returns;
-
-      data = await pool.view.getCreator();
-      fields.creator = data.returns;
-
-      data = await pool.view.getGoal();
-      fields.goal = data.returns;
-
-      data = await pool.view.getEnd();
-      fields.end = data.returns;
-
-      data = await pool.view.getTotalCollected();
-      fields.totalCollected = data.returns;
-
-      setContractFields(fields);
-    } catch (e) {
-      console.error(e);
-    }
-  };
 
   const callContribute = async (amount: number) => {
     if (signer) {
@@ -111,7 +67,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
       setCurrentTxId(contributeResult.txId);
 
-      await fetchContractFields();
+      // await fetchContractFields();
       await refetchContributors();
     }
   };
@@ -127,7 +83,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
       setCurrentTxId(refundResult.txId);
 
-      await fetchContractFields();
+      // await fetchContractFields();
       await refetchContributors();
     }
   };
@@ -168,10 +124,6 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       );
     }
   }, [account, contributors]);
-
-  useEffect(() => {
-    fetchContractFields();
-  }, []);
 
   useEffect(() => {
     if (txStatus) {
