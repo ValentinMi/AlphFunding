@@ -60,7 +60,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { activeStep, setActiveStep } = useSteps({
-    index: 1,
+    index: 0,
     count: steps.length,
   });
 
@@ -87,7 +87,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
   };
 
   const onSubmit: SubmitHandler<Inputs> = async (data) => {
-    if (activeStep !== 3) return;
+    if (activeStep !== 2) return;
     try {
       if (signer) {
         setIsLoading(true);
@@ -163,7 +163,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
       <Box mt={12} w={"40vw"}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <VStack spacing={10}>
-            {activeStep === 1 && (
+            {activeStep === 0 && (
               <>
                 <FormControl isInvalid={!!errors.name}>
                   <FormLabel>Name</FormLabel>
@@ -207,7 +207,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
                 </FormControl>
               </>
             )}
-            {activeStep === 2 && (
+            {activeStep === 1 && (
               <FormControl isInvalid={!!errors.beneficiary}>
                 <FormLabel>Beneficiary address</FormLabel>
                 <Input
@@ -226,7 +226,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
                 )}
               </FormControl>
             )}
-            {activeStep === 3 && (
+            {activeStep === 2 && (
               <>
                 <FormControl isInvalid={!!errors.goal}>
                   <FormLabel>Goal</FormLabel>
@@ -275,7 +275,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
 
           <Flex direction={"column"} alignItems={"center"} mt={12}>
             <HStack mt={6} spacing={6}>
-              {activeStep > 1 && (
+              {activeStep > 0 && (
                 <Button
                   leftIcon={<ArrowLeftIcon />}
                   colorScheme={"gray"}
@@ -284,7 +284,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
                   Back
                 </Button>
               )}
-              {activeStep === 3 ? (
+              {activeStep === 2 ? (
                 <Button
                   colorScheme={"green"}
                   type={"submit"}
@@ -305,7 +305,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
                 </Button>
               )}
             </HStack>
-            {activeStep === 3 && (
+            {activeStep === 2 && (
               <Text color={"gray"} mt={4} textAlign={"center"}>
                 Create a pool cost 0.1 ALPH for the minimal contract deposit
               </Text>
