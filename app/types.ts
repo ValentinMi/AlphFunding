@@ -8,4 +8,10 @@ export type PoolContract = {
   contractAddress: string;
 };
 
+export type PaginatedPoolContract = {
+  data: PoolContract[];
+  nextCursor: number | null;
+  prevCursor: number | null;
+};
+
 export type CreatePoolContract = Omit<PoolContract, "id">;

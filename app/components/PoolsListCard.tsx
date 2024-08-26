@@ -18,7 +18,7 @@ import { PoolTypes } from "../../artifacts/ts";
 import { truncateText } from "../utils";
 import { Countdown } from "./Countdown";
 import { prettifyAttoAlphAmount } from "@alephium/web3";
-import { usePoolFields } from "../hooks/usePool";
+import { usePoolFields } from "../hooks/usePoolFields";
 
 interface PoolsListCardProps {
   poolContractAddress: string;

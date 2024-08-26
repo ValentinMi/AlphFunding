@@ -29,7 +29,7 @@ import { Contributors } from "./Contributors";
 import { Withdraw } from "./Withdraw";
 import { MdOutlineContentCopy } from "react-icons/md";
 import { useContributors } from "../hooks/useContributors";
-import { usePoolFields } from "../hooks/usePool";
+import { usePoolFields } from "../hooks/usePoolFields";
 
 interface PoolProps {
   poolContractAddress: string;
