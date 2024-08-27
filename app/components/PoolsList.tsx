@@ -1,31 +1,15 @@
-import React, { useEffect } from "react";
-import { Box, Flex, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import React from "react";
+import { Box, Button, Flex, SimpleGrid, VStack } from "@chakra-ui/react";
 import { PoolsListCard } from "./PoolsListCard";
 import { usePools } from "../hooks/usePools";
 
 interface PoolsListProps {}
 
 export const PoolsList: React.FC<PoolsListProps> = () => {
-  const { data, isLoading, fetchNextPage, isFetchingNextPage } = usePools();
+  const { data, isLoading, fetchNextPage, isFetchingNextPage, hasNextPage } =
+    usePools();
 
   const pools = data ? data.pages.flatMap((page) => page.data) : [];
-
-  useEffect(() => {
-    const handleScroll = async () => {
-      if (
-        window.innerHeight + document.documentElement.scrollTop + 50 >=
-        document.documentElement.offsetHeight
-      ) {
-        await fetchNextPage();
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   if (isLoading) {
     return (
@@ -63,10 +47,19 @@ export const PoolsList: React.FC<PoolsListProps> = () => {
           />
         ))}
       </SimpleGrid>
-      {isFetchingNextPage && (
-        <Flex justifyContent={"center"}>
-          <Text>Loading more...</Text>
-        </Flex>
+      {hasNextPage && (
+        <Button
+          colorScheme={"yellow"}
+          size={"lg"}
+          variant={"outline"}
+          color={"yellow.500"}
+          borderColor={"yellow.500"}
+          mt={6}
+          onClick={() => fetchNextPage()}
+          isLoading={isFetchingNextPage}
+        >
+          View more
+        </Button>
       )}
     </Flex>
   );

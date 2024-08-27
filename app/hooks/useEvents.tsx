@@ -28,5 +28,6 @@ export const useEvents = (poolContractAddress: string) => {
       nextStart: 0,
     },
     refetchOnWindowFocus: true,
+    refetchInterval: 10000,
   });
 };

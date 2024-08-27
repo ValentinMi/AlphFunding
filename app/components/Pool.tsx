@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useTxStatus, useWallet } from "@alephium/web3-react";
 import {
+  Badge,
   Box,
   Flex,
   Heading,
@@ -8,7 +9,6 @@ import {
   Icon,
   Link,
   Progress,
-  Tag,
   Text,
   useToast,
 } from "@chakra-ui/react";
@@ -36,7 +36,8 @@ interface PoolProps {
 }
 
 export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
-  const { data: contractFields } = usePoolFields(poolContractAddress);
+  const { data: contractFields, refetch: fetchContractFields } =
+    usePoolFields(poolContractAddress);
   const [connectedAccountIsContributor, setConnectedAccountIsContributor] =
     useState<boolean>(false);
   const [currentTxId, setCurrentTxId] = useState<string>("");
@@ -67,7 +68,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
       setCurrentTxId(contributeResult.txId);
 
-      // await fetchContractFields();
+      await fetchContractFields();
       await refetchContributors();
     }
   };
@@ -83,7 +84,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
       setCurrentTxId(refundResult.txId);
 
-      // await fetchContractFields();
+      await fetchContractFields();
       await refetchContributors();
     }
   };
@@ -105,8 +106,8 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
     }
   };
 
-  const handleCopy = (value: string) => {
-    navigator.clipboard.writeText(value);
+  const handleCopy = async (value: string) => {
+    await navigator.clipboard.writeText(value);
     toast({
       title: "Copied !",
       status: "success",
@@ -186,15 +187,26 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
               </Link>
             </Text>
           </Flex>
-          <Flex justifyContent={"space-between"} w={"100%"} mt={8}>
+          <Flex
+            justifyContent={"space-between"}
+            w={"100%"}
+            mt={8}
+            alignItems={"baseline"}
+          >
             <Text>
               {prettifyAttoAlphAmount(contractFields.totalCollected)} /{" "}
               {prettifyAttoAlphAmount(contractFields.goal)} ALPH
             </Text>
-            {isEndReached ? (
-              <Tag size={"lg"} variant="solid" colorScheme="teal">
-                Finished
-              </Tag>
+            {contractFields.hasBeenWithdrawn ? (
+              <Badge size={"lg"} variant="solid" colorScheme="yellow">
+                Withdrawn
+              </Badge>
+            ) : isEndReached ? (
+              <HStack>
+                <Badge size={"lg"} variant="solid" colorScheme="yellow">
+                  Finished
+                </Badge>
+              </HStack>
             ) : (
               <Flex ml={4}>
                 <Text mr={2}>ends in:</Text>{" "}

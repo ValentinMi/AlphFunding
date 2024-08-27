@@ -15,7 +15,6 @@ export const useContributors = (poolContractAddress: string) => {
     const contributorsMap = new Map<string, bigint>();
 
     for (const event of contractEvents.events) {
-      console.log(event);
       const address = event.fields[0].value as string;
       const amount = BigInt(event.fields[1].value as string);
       const isRefundEvent = event.eventIndex === 1;
