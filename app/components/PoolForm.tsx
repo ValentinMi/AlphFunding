@@ -100,6 +100,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
             creator: account!.address,
             beneficiary: data.beneficiary,
             totalCollected: BigInt(0),
+            hasBeenWithdrawn: false,
           },
         });
 

@@ -13,6 +13,7 @@ const fetchPoolFields = async (poolContractAddress: string) => {
     getGoal: {},
     getEnd: {},
     getTotalCollected: {},
+    getHasBeenWithdrawn: {},
   });
 
   const fields: PoolTypes.Fields = {} as PoolTypes.Fields;
@@ -24,6 +25,7 @@ const fetchPoolFields = async (poolContractAddress: string) => {
   fields.goal = result.getGoal.returns;
   fields.end = result.getEnd.returns;
   fields.totalCollected = result.getTotalCollected.returns;
+  fields.hasBeenWithdrawn = result.getHasBeenWithdrawn.returns;
 
   return fields;
 };
@@ -40,6 +42,9 @@ export const usePoolFields = (poolContractAddress: string) => {
       end: 0n,
       totalCollected: 0n,
       description: "",
+      hasBeenWithdrawn: false,
     },
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
   });
 };

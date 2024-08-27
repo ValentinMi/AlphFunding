@@ -88,9 +88,18 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
               </Button>
             </Link>
             {isFinished ? (
-              <Tag size={"lg"} variant="solid" colorScheme="teal">
-                Finished
-              </Tag>
+              <HStack>
+                {contractFields.hasBeenWithdrawn && (
+                  <Badge size={"lg"} variant="solid" colorScheme="orange">
+                    Withdrawn
+                  </Badge>
+                )}
+                {isFinished && (
+                  <Badge size={"lg"} variant="solid" colorScheme="yellow">
+                    Finished
+                  </Badge>
+                )}
+              </HStack>
             ) : (
               <Flex ml={4}>
                 <Text mr={2}>ends in:</Text>{" "}
