@@ -94,11 +94,9 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                     Withdrawn
                   </Badge>
                 )}
-                {isFinished && (
-                  <Badge size={"lg"} variant="solid" colorScheme="yellow">
-                    Finished
-                  </Badge>
-                )}
+                <Badge size={"lg"} variant="solid" colorScheme="yellow">
+                  Finished
+                </Badge>
               </HStack>
             ) : (
               <Flex ml={4}>

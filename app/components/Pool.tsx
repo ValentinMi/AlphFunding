@@ -197,12 +197,13 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
               {prettifyAttoAlphAmount(contractFields.totalCollected)} /{" "}
               {prettifyAttoAlphAmount(contractFields.goal)} ALPH
             </Text>
-            {contractFields.hasBeenWithdrawn ? (
-              <Badge size={"lg"} variant="solid" colorScheme="yellow">
-                Withdrawn
-              </Badge>
-            ) : isEndReached ? (
+            {isEndReached ? (
               <HStack>
+                {contractFields.hasBeenWithdrawn && (
+                  <Badge size={"lg"} variant="solid" colorScheme="orange">
+                    Withdrawn
+                  </Badge>
+                )}
                 <Badge size={"lg"} variant="solid" colorScheme="yellow">
                   Finished
                 </Badge>
