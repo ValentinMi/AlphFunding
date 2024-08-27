@@ -1,5 +1,6 @@
 import React from "react";
 import {
+  Badge,
   Box,
   Button,
   Card,
@@ -8,23 +9,20 @@ import {
   CircularProgress,
   Flex,
   Heading,
+  HStack,
   Link,
   Stack,
-  Tag,
   Text,
 } from "@chakra-ui/react";
 import NextLink from "next/link";
-import { PoolTypes } from "../../artifacts/ts";
 import { truncateText } from "../utils";
-import { Countdown } from "./Countdown";
 import { prettifyAttoAlphAmount } from "@alephium/web3";
 import { usePoolFields } from "../hooks/usePoolFields";
+import { Countdown } from "./Countdown";
 
 interface PoolsListCardProps {
   poolContractAddress: string;
 }
-
-type PoolListCardFields = Omit<PoolTypes.Fields, "beneficiary" | "creator">;
 
 export const PoolsListCard: React.FC<PoolsListCardProps> = ({
   poolContractAddress,
@@ -37,11 +35,12 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
     <Card
       direction={{ base: "column", sm: "row" }}
       overflow="hidden"
-      variant="outline"
-      boxShadow={"md"}
-      borderColor={"yellow.500"}
-      borderWidth={2}
-      backgroundColor={"rgba(255, 255, 255, 0.1)"}
+      variant="elevated"
+      transition={"all 1s"}
+      _hover={{
+        transform: "scale(1.05)",
+        transition: "all 1s",
+      }}
     >
       <Stack w={"100%"}>
         <CardBody>
@@ -55,6 +54,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
             <Flex direction={"column"} alignItems={"flex-end"}>
               <CircularProgress
                 color={"yellow.500"}
+                size={"70px"}
                 value={
                   (Number(
                     prettifyAttoAlphAmount(contractFields.totalCollected),
@@ -64,7 +64,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
                 }
                 thickness="12px"
               />
-              <Text mt={1} textAlign={"right"}>
+              <Text mt={2} textAlign={"right"}>
                 {prettifyAttoAlphAmount(contractFields.totalCollected)} /{" "}
                 {prettifyAttoAlphAmount(contractFields.goal)} ALPH
               </Text>
