@@ -4,7 +4,6 @@ import {
   Box,
   Button,
   Container,
-  Divider,
   Flex,
   Heading,
   HStack,
@@ -15,6 +14,7 @@ import NextLink from "next/link";
 import { BiDonateHeart } from "react-icons/bi";
 import { VscWorkspaceTrusted } from "react-icons/vsc";
 import { LandingPageBenefit } from "./components/LandingPageBenefit";
+import { KPIs } from "./components/KPIs";
 
 export default function Page() {
   const benefits = [
@@ -60,9 +60,14 @@ export default function Page() {
 
   return (
     <Layout>
-      <Flex w={"100%"} alignItems={"center"} direction={"column"}>
+      <Flex
+        as={"section"}
+        w={"100%"}
+        alignItems={"center"}
+        direction={"column"}
+      >
         <Flex
-          h={"90vh"}
+          h={"80vh"}
           direction={"column"}
           alignItems={"center"}
           justifyContent={"center"}
@@ -107,8 +112,15 @@ export default function Page() {
             </Link>
           </HStack>
         </Flex>
-        <Divider mt={5} />
-        <Flex h={"90vh"} direction={"column"} justifyContent={"space-around"}>
+        <Flex as={"section"} w={"100%"}>
+          <KPIs />
+        </Flex>
+        <Flex
+          as={"section"}
+          h={"100vh"}
+          direction={"column"}
+          justifyContent={"space-around"}
+        >
           {benefits.map((benef, index) => (
             <LandingPageBenefit index={index} {...benef} />
           ))}

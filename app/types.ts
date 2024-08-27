@@ -15,3 +15,10 @@ export type PaginatedPoolContract = {
 };
 
 export type CreatePoolContract = Omit<PoolContract, "id">;
+
+export type PoolsKPIs = {
+  totalPools: number;
+  totalActivePools: number;
+  totalAlphTokenOnPools: bigint;
+  totalAlphTokenDistributed: bigint;
+};

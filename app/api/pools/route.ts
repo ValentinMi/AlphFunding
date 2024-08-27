@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
-import { prisma } from "../prisma";
-import { PaginatedPoolContract } from "../types";
+import { prisma } from "../../prisma";
+import { PaginatedPoolContract } from "../../types";
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
@@ -9,15 +9,15 @@ export async function GET(request: NextRequest) {
   const pools = await prisma.pool.findMany(
     page
       ? {
-          take: 10,
-          skip: Number(page) * 10,
+          take: 9,
+          skip: Number(page) * 9,
         }
       : undefined,
   );
 
   const response: PaginatedPoolContract = {
     data: pools,
-    nextCursor: pools.length === 10 ? Number(page) + 1 : null,
+    nextCursor: pools.length === 9 ? Number(page) + 1 : null,
     prevCursor: page ? Number(page) - 1 : null,
   };
 
