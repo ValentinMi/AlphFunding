@@ -20,6 +20,7 @@ export enum ErrorCodes {
   NotTheBeneficiary = 3,
   NoContribution = 4,
   NotEnoughFunds = 5,
+  FundsAlreadyWithdrawn = 6,
 }
 
 web3.setCurrentNodeProvider("http://127.0.0.1:22973", undefined, fetch);
@@ -33,6 +34,7 @@ export const defaultInitialFields: PoolTypes.Fields = {
   goal: convertAlphAmountWithDecimals(100)!,
   end: BigInt(Date.now() + 1000 * 60 * 60 * 24 * 7),
   totalCollected: 0n,
+  hasBeenWithdrawn: false,
 };
 
 export async function deployPool(initialFields?: PoolTypes.Fields) {

@@ -244,7 +244,7 @@ describe("Pool", async () => {
         attoAlphAmount: convertAlphAmountWithDecimals(101), // +1 for map deposit
       });
 
-      await sleep(600);
+      await sleep(1000);
 
       await Withdraw.execute(signer, {
         initialFields: {
@@ -284,7 +284,7 @@ describe("Pool", async () => {
         attoAlphAmount: convertAlphAmountWithDecimals(101), // +1 for map deposit
       });
 
-      await sleep(600);
+      await sleep(1000);
 
       await Withdraw.execute(beneficiarySigner, {
         initialFields: {
@@ -298,6 +298,50 @@ describe("Pool", async () => {
       );
 
       assert(balanceOfBeneficiaryBefore < balanceOfBeneficiaryAfter);
+    });
+
+    it("should revert FundsAlreadyCollected when withdrawing twice", async () => {
+      const beneficiarySigner = new PrivateKeyWallet({
+        privateKey: testPrivateKey,
+      });
+
+      pool = (
+        await deployPool({
+          ...defaultInitialFields,
+          end: BigInt(Date.now() + 500),
+          creator: ZERO_ADDRESS,
+          beneficiary: beneficiarySigner.address,
+          totalCollected: 0n,
+        })
+      ).contractInstance;
+
+      await Contribute.execute(signer, {
+        initialFields: {
+          pool: pool.address,
+          amount: convertAlphAmountWithDecimals(100)!,
+        },
+        attoAlphAmount: convertAlphAmountWithDecimals(101), // +1 for map deposit
+      });
+
+      await sleep(1000);
+
+      await Withdraw.execute(beneficiarySigner, {
+        initialFields: {
+          pool: pool.address,
+        },
+      });
+
+      const withdrawPromise = Withdraw.execute(beneficiarySigner, {
+        initialFields: {
+          pool: pool.address,
+        },
+      });
+
+      await expectAssertionError(
+        withdrawPromise,
+        pool.address,
+        ErrorCodes.FundsAlreadyWithdrawn,
+      );
     });
   });
 });

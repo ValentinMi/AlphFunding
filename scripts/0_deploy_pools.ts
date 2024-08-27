@@ -62,6 +62,7 @@ function createPools() {
       description: stringToHex(faker.lorem.paragraph(3)),
       beneficiary: process.env.BENEFIARY_ADDRESS || ZERO_ADDRESS,
       creator: process.env.CREATOR_ADDRESS || ZERO_ADDRESS,
+      hasBeenWithdrawn: false,
     });
 
     // Edit the first pool to be finished

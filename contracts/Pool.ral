@@ -5,7 +5,8 @@ Contract Pool(
     beneficiary: Address,
     end: U256,
     goal: U256,
-    mut totalCollected: U256
+    mut totalCollected: U256,
+    mut hasBeenWithdrawn: Bool
 ) {
     
     mapping[Address, U256] contributions
@@ -20,6 +21,7 @@ Contract Pool(
         NotTheBeneficiary = 3
         NoContribution = 4
         NotEnoughFunds = 5
+        FundsAlreadyCollected = 6
     }
 
     pub fn getTotalCollected() -> U256 {
@@ -48,6 +50,10 @@ Contract Pool(
 
     pub fn getDescription() -> ByteVec {
         return description
+    }
+
+    pub fn getHasBeenWithdrawn() -> Bool {
+        return hasBeenWithdrawn
     }
 
     pub fn getCallerContribution() -> U256 {
@@ -85,8 +91,9 @@ Contract Pool(
     }
 
     // Allows the beneficiary or owner to withdraw pool's gains to beneficiary address
-    @using(assetsInContract = true)
+    @using(assetsInContract = true, updateFields = true)
     pub fn withdraw() -> () {
+        assert!(hasBeenWithdrawn == false, ErrorCodes.FundsAlreadyCollected)
         let caller = callerAddress!()
         checkCaller!(caller == beneficiary || caller == creator, ErrorCodes.NotTheBeneficiary)
 
@@ -94,6 +101,7 @@ Contract Pool(
         assert!(blockTimeStamp >= end, ErrorCodes.CollectNotFinished)
 
         transferTokenFromSelf!(beneficiary, ALPH, totalCollected)
+        hasBeenWithdrawn = true
     }
 
     // Allows to refund the contribution to contributor address
