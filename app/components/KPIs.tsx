@@ -13,7 +13,7 @@ import { prettifyAttoAlphAmount } from "@alephium/web3";
 interface KPIsProps {}
 
 export const KPIs: React.FC<KPIsProps> = () => {
-  const { data, isSuccess, isLoading } = useKPIs();
+  const { data, isSuccess } = useKPIs();
 
   const KPIsList: Array<{ label: string; value: string }> = isSuccess
     ? [

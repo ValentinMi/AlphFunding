@@ -4,11 +4,7 @@ import { PoolsList } from "../components/PoolsList";
 import { KPIs } from "../components/KPIs";
 import { Box } from "@chakra-ui/react";
 
-export default function Page({
-  params,
-}: {
-  params: { contractAddress: string };
-}) {
+export default function Page() {
   return (
     <Layout>
       <Box mb={5}>

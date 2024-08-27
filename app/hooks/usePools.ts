@@ -4,7 +4,7 @@ import { PaginatedPoolContract } from "../types";
 const fetchPaginatedPools = async ({
   pageParam = 0,
 }): Promise<PaginatedPoolContract> => {
-  const res = await fetch(`/api?page=${pageParam}`, {
+  const res = await fetch(`/api/pools?page=${pageParam}`, {
     headers: {
       "Content-Type": "application/json",
     },

@@ -1,4 +1,3 @@
-import { NextRequest } from "next/server";
 import { PoolsKPIs } from "../../../types";
 import { prisma } from "../../../prisma";
 import { NodeProvider, web3 } from "@alephium/web3";
@@ -8,7 +7,7 @@ const nodeUrl = process.env.NEXT_PUBLIC_NODE_URL;
 const nodeProvider = new NodeProvider(nodeUrl!);
 web3.setCurrentNodeProvider(nodeProvider);
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const pools = await prisma.pool.findMany({});
 
   const kpis: PoolsKPIs = {
