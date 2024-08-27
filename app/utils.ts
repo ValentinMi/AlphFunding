@@ -2,10 +2,6 @@ export const sliceAddress = (address: string) => {
   return `${address.slice(0, 6)}...${address.slice(-4)}`;
 };
 
-export const bigIntToNumber = (bigInt: bigint) => {
-  return Number(bigInt.toString());
-};
-
 export const truncateText = (text: string, maxLength: number): string => {
   if (text.length <= maxLength) {
     return text;
@@ -35,4 +31,8 @@ export const isDateAtLeastOneWeekInFuture = (dateString: string): boolean => {
   const todayTimestamp = new Date().getTime() / 1000;
 
   return inputDateInTimestamp - todayTimestamp >= oneWeekInSeconds;
+};
+
+export const capitalizeFirstLetter = (text: string): string => {
+  return text.charAt(0).toUpperCase() + text.slice(1);
 };
