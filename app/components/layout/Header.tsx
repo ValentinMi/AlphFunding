@@ -41,7 +41,7 @@ export const Header: React.FC<HeaderProps> = () => {
           <Heading>
             Alph
             <Box as={"span"} color={"yellow.500"}>
-              Pool
+              Funding
             </Box>
           </Heading>
         </Box>

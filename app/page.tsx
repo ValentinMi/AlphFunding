@@ -21,7 +21,7 @@ export default function Page() {
     {
       title: "Create Donation Pools",
       description:
-        "With AlphPool, you can easily create donation pools for causes you care about. Whether you're raising funds for a community project, supporting a charity, or helping someone in need, our platform provides a straightforward and user-friendly interface to set up and manage your donation campaigns.",
+        "With AlphFunding, you can easily create donation pools for causes you care about. Whether you're raising funds for a community project, supporting a charity, or helping someone in need, our platform provides a straightforward and user-friendly interface to set up and manage your donation campaigns.",
       icon: BiDonateHeart,
       CTA: (
         <Link as={NextLink} href="/pools/create">
@@ -70,16 +70,16 @@ export default function Page() {
           <Heading as={"h1"} size={"4xl"} mt={"-10vh"}>
             Welcome to Alph
             <Box as={"span"} color={"yellow.500"}>
-              Pool
+              Funding
             </Box>
           </Heading>
           <Container centerContent mt={5} textAlign={"center"}>
             <Text>
-              Welcome to AlphPool, the decentralized application on the Alephium
-              blockchain that empowers you to create and contribute to donation
-              pools seamlessly. AlphPool is designed to harness the power of
-              blockchain technology to make charitable giving more transparent,
-              secure, and efficient.
+              Welcome to AlphFunding, the decentralized application on the
+              Alephium blockchain that empowers you to create and contribute to
+              donation pools seamlessly. AlphFunding is designed to harness the
+              power of blockchain technology to make charitable giving more
+              transparent, secure, and efficient.
             </Text>
           </Container>
           <HStack mt={10} spacing={8}>
