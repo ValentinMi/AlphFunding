@@ -64,11 +64,14 @@ function createPools() {
       creator: process.env.CREATOR_ADDRESS || ZERO_ADDRESS,
       hasBeenWithdrawn: false,
     });
-
-    // Edit the first pool to be finished
-    pools[0].end = BigInt(faker.date.past().getTime());
-    pools[0].totalCollected = pools[0].goal;
   }
+
+  // Edit the 2 first pools to be finished
+  pools[0].end = BigInt(faker.date.past().getTime());
+  pools[0].totalCollected = pools[0].goal;
+
+  pools[1].end = BigInt(faker.date.past().getTime());
+  pools[1].totalCollected = pools[1].goal;
 }
 
 async function deployPool(
