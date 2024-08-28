@@ -28,6 +28,7 @@ export async function GET() {
 
     if (result.getHasBeenWithdrawn.returns) {
       kpis.totalAlphTokenDistributed += result.getTotalCollected.returns;
+      kpis.totalAlphTokenOnPools -= result.getTotalCollected.returns;
     } else {
       kpis.totalActivePools += 1;
     }

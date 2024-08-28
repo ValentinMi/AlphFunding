@@ -250,7 +250,8 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
             )}
             {account &&
               (account.address === contractFields.beneficiary ||
-                account.address === contractFields.creator) && (
+                account.address === contractFields.creator) &&
+              !contractFields.hasBeenWithdrawn && (
                 <Withdraw
                   callWithdraw={callWithdraw}
                   isEndReached={isEndReached}

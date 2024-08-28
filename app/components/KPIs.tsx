@@ -27,7 +27,7 @@ export const KPIs: React.FC<KPIsProps> = () => {
         },
         {
           label: "TVL",
-          value: `${prettifyAttoAlphAmount(data.totalAlphTokenOnPools - data.totalAlphTokenDistributed)} ALPH`,
+          value: `${prettifyAttoAlphAmount(data.totalAlphTokenOnPools)} ALPH`,
         },
         {
           label: "Total distributed",
