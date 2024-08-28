@@ -40,7 +40,7 @@ export const KPIs: React.FC<KPIsProps> = () => {
     <Flex direction={"column"} w={"100%"}>
       <StatGroup>
         {KPIsList.map((kpi) => (
-          <Stat textAlign={"center"}>
+          <Stat textAlign={"center"} key={kpi.label}>
             <StatLabel>{kpi.label}</StatLabel>
             <StatNumber>{kpi.value}</StatNumber>
           </Stat>

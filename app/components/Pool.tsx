@@ -201,7 +201,7 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
               <HStack>
                 {contractFields.hasBeenWithdrawn && (
                   <Badge size={"lg"} variant="solid" colorScheme="orange">
-                    Withdrawn
+                    Collected
                   </Badge>
                 )}
                 <Badge size={"lg"} variant="solid" colorScheme="yellow">

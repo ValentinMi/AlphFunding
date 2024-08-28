@@ -91,7 +91,7 @@ export const PoolsListCard: React.FC<PoolsListCardProps> = ({
               <HStack>
                 {contractFields.hasBeenWithdrawn && (
                   <Badge size={"lg"} variant="solid" colorScheme="orange">
-                    Withdrawn
+                    Collected
                   </Badge>
                 )}
                 <Badge size={"lg"} variant="solid" colorScheme="yellow">
