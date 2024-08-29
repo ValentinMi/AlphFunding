@@ -11,3 +11,10 @@ model Pool {
   id              Int    @id @default(autoincrement())
   contractAddress String
 }
+
+model AlphPrice {
+  id         Int      @id @default(autoincrement())
+  priceInUsd Float    @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
