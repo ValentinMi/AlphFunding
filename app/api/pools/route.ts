@@ -11,6 +11,9 @@ export async function GET(request: NextRequest) {
       ? {
           take: 9,
           skip: Number(page) * 9,
+          orderBy: {
+            id: "desc",
+          },
         }
       : undefined,
   );
