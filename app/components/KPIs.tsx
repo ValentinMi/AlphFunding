@@ -1,6 +1,7 @@
 import React from "react";
 import { useKPIs } from "../hooks/useKPIs";
 import {
+  Box,
   Divider,
   Flex,
   Stat,
@@ -9,13 +10,19 @@ import {
   StatNumber,
 } from "@chakra-ui/react";
 import { prettifyAttoAlphAmount } from "@alephium/web3";
+import { useAlphPrice } from "../hooks/useAlphPrice";
 
 interface KPIsProps {}
 
 export const KPIs: React.FC<KPIsProps> = () => {
   const { data, isSuccess } = useKPIs();
+  const { calculateAlphBagPrice } = useAlphPrice();
 
-  const KPIsList: Array<{ label: string; value: string }> = isSuccess
+  const KPIsList: Array<{
+    label: string;
+    value: string;
+    isTokenAmount?: boolean;
+  }> = isSuccess
     ? [
         {
           label: "Active Pools",
@@ -27,22 +34,31 @@ export const KPIs: React.FC<KPIsProps> = () => {
         },
         {
           label: "TVL",
-          value: `${prettifyAttoAlphAmount(data.totalAlphTokenOnPools)} ALPH`,
+          value: prettifyAttoAlphAmount(data.totalAlphTokenOnPools),
+          isTokenAmount: true,
         },
         {
           label: "Total distributed",
-          value: `${prettifyAttoAlphAmount(data.totalAlphTokenDistributed)} ALPH`,
+          value: prettifyAttoAlphAmount(data.totalAlphTokenDistributed),
+          isTokenAmount: true,
         },
       ]
     : [];
 
   return (
     <Flex direction={"column"} w={"100%"}>
-      <StatGroup>
+      <StatGroup alignItems={"flex-end"}>
         {KPIsList.map((kpi) => (
           <Stat textAlign={"center"} key={kpi.label}>
             <StatLabel>{kpi.label}</StatLabel>
-            <StatNumber>{kpi.value}</StatNumber>
+            <StatNumber>
+              {kpi.value} {kpi.isTokenAmount && "ALPH"}{" "}
+              {kpi.isTokenAmount && (
+                <Box as={"span"} fontSize={"sm"}>
+                  (${calculateAlphBagPrice(Number(kpi.value.replace(",", "")))})
+                </Box>
+              )}
+            </StatNumber>
           </Stat>
         ))}
       </StatGroup>
