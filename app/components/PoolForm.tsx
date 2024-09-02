@@ -111,6 +111,7 @@ export const PoolForm: React.FC<PoolFormProps> = () => {
           );
           await createPool({
             contractAddress: newPool.contractInstance.address,
+            name: data.name,
           });
         }
 

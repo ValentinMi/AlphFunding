@@ -36,6 +36,7 @@ const deployPools: DeployFunction<Settings> = async (deployer: Deployer) => {
       await prisma.pool.create({
         data: {
           contractAddress: address,
+          name: faker.company.name(),
         },
       });
     }
@@ -66,12 +67,14 @@ function createPools() {
     });
   }
 
-  // Edit the 2 first pools to be finished
-  pools[0].end = BigInt(faker.date.past().getTime());
-  pools[0].totalCollected = pools[0].goal;
+  const lastIndex = pools.length - 1;
 
-  pools[1].end = BigInt(faker.date.past().getTime());
-  pools[1].totalCollected = pools[1].goal;
+  // Edit the 2 last pools to be finished
+  pools[lastIndex].end = BigInt(faker.date.past().getTime());
+  pools[lastIndex].totalCollected = pools[0].goal;
+
+  pools[lastIndex - 1].end = BigInt(faker.date.past().getTime());
+  pools[lastIndex - 1].totalCollected = pools[1].goal;
 }
 
 async function deployPool(

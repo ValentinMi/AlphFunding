@@ -20,17 +20,19 @@ export const KPIs: React.FC<KPIsProps> = () => {
 
   const KPIsList: Array<{
     label: string;
-    value: string;
-    isTokenAmount?: boolean;
+    value: string | undefined;
+    isTokenAmount: boolean;
   }> = isSuccess
     ? [
         {
           label: "Active Pools",
           value: data.totalActivePools.toString(),
+          isTokenAmount: false,
         },
         {
           label: "Total Pools",
           value: data.totalPools.toString(),
+          isTokenAmount: false,
         },
         {
           label: "TVL",
@@ -55,7 +57,8 @@ export const KPIs: React.FC<KPIsProps> = () => {
               {kpi.value} {kpi.isTokenAmount && "ALPH"}{" "}
               {kpi.isTokenAmount && (
                 <Box as={"span"} fontSize={"sm"}>
-                  (${calculateAlphBagPrice(Number(kpi.value.replace(",", "")))})
+                  (${calculateAlphBagPrice(Number(kpi.value!.replace(",", "")))}
+                  )
                 </Box>
               )}
             </StatNumber>

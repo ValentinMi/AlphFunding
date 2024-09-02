@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 export const useAlphPrice = () => {
-  const query = useQuery({
+  const query = useQuery<{ price: number }>({
     queryKey: ["alphPrice"],
     queryFn: async () => {
       const res = await fetch("/api/alphprice");
@@ -13,7 +13,7 @@ export const useAlphPrice = () => {
   const calculateAlphBagPrice = (bag: number) => {
     if (!query.isSuccess) return 0;
 
-    return bag * query.data.price;
+    return (bag * query.data.price).toFixed(2);
   };
 
   return { ...query, calculateAlphBagPrice };

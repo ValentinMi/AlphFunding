@@ -1,9 +1,10 @@
 import React from "react";
-import { Box, Flex, Heading, HStack, Link, Tag } from "@chakra-ui/react";
+import { Box, Flex, Heading, HStack, Link, Tag, Text } from "@chakra-ui/react";
 import { AlephiumConnectButton } from "@alephium/web3-react";
 import { Account } from "@alephium/web3";
 import { capitalizeFirstLetter, sliceAddress } from "../../utils";
 import NextLink from "next/link";
+import { useAlphPrice } from "../../hooks/useAlphPrice";
 
 interface HeaderProps {}
 
@@ -27,6 +28,8 @@ export const Header: React.FC<HeaderProps> = () => {
     const address = account.address;
     return sliceAddress(address);
   };
+
+  const { data, isSuccess } = useAlphPrice();
 
   return (
     <Flex
@@ -54,6 +57,17 @@ export const Header: React.FC<HeaderProps> = () => {
         </HStack>
       </Flex>
       <Flex>
+        {
+          <Tag
+            size={"lg"}
+            variant="outline"
+            colorScheme="yellow"
+            color={"yellow.500"}
+            mr={3}
+          >
+            {isSuccess && <Text>ALPH ${data.price}</Text>}
+          </Tag>
+        }
         <Tag
           size={"lg"}
           variant="outline"

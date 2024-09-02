@@ -28,6 +28,7 @@ export async function GET(request: NextRequest) {
       },
     });
   } else {
+    console.log("create");
     await prisma.alphPrice.create({
       data: {
         priceInUsd: price,

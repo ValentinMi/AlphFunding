@@ -5,6 +5,7 @@ import { PaginatedPoolContract } from "../../types";
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams;
   const page = searchParams.get("page");
+  const searchQuery = searchParams.get("name");
 
   const pools = await prisma.pool.findMany(
     page

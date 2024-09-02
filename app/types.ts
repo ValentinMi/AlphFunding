@@ -6,6 +6,7 @@ export type Contributor = {
 export type PoolContract = {
   id: number;
   contractAddress: string;
+  name: string;
 };
 
 export type PaginatedPoolContract = {
