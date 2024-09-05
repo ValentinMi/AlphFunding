@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useTxStatus, useWallet } from "@alephium/web3-react";
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Badge,
   Box,
+  CloseButton,
   Flex,
   Heading,
   HStack,
@@ -10,18 +15,15 @@ import {
   Link,
   Progress,
   Text,
-  useToast,
+  useDisclosure,
+  useToast
 } from "@chakra-ui/react";
 import {
   Contribute as ContributeTransaction,
   Refund as RefundTransaction,
-  Withdraw as WithdrawTransaction,
+  Withdraw as WithdrawTransaction
 } from "artifacts/ts/scripts";
-import {
-  convertAlphAmountWithDecimals,
-  DUST_AMOUNT,
-  prettifyAttoAlphAmount,
-} from "@alephium/web3";
+import { convertAlphAmountWithDecimals, DUST_AMOUNT, prettifyAttoAlphAmount } from "@alephium/web3";
 import { Contribute } from "./Contribute";
 import { Countdown } from "./Countdown";
 import { Refund } from "./Refund";
@@ -52,6 +54,11 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
   const isGoalReached = contractFields.totalCollected >= contractFields.goal;
 
   const toast = useToast();
+  const {
+    isOpen: isAlertOpen,
+    onClose: onCloseAlert,
+    onOpen: onOpenAlert
+  } = useDisclosure();
 
   const callContribute = async (amount: number) => {
     if (signer) {
@@ -128,23 +135,13 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
 
   useEffect(() => {
     if (txStatus) {
-      if (txStatus.type === "Confirmed") {
-        toast({
-          title: "Transaction confirmed",
-          status: "success",
-          duration: 5000,
-          isClosable: true,
-        });
-      } else if (txStatus.type === "MemPooled") {
-        toast({
-          title: currentTxId,
-          status: "loading",
-          duration: 5000,
-          isClosable: true,
-        });
-      }
+      onOpenAlert();
+      setTimeout(() => {
+        onCloseAlert();
+      }, 5000);
     }
   }, [txStatus]);
+
 
   return (
     <Flex direction={"column"}>
@@ -263,6 +260,42 @@ export const Pool: React.FC<PoolProps> = ({ poolContractAddress }) => {
       <Box mt={4}>
         <Contributors contributors={contributors} />
       </Box>
+      <Box position={"absolute"} top={20} right={10}>
+        {isAlertOpen && txStatus && (txStatus.type === "MemPooled" ? (
+        <Alert status="loading">
+          <AlertIcon />
+          <Box>
+            <AlertTitle>Transaction waiting for block</AlertTitle>
+            <AlertDescription>
+              txId: {currentTxId}
+            </AlertDescription>
+          </Box>
+          <CloseButton
+            alignSelf='flex-start'
+            position='relative'
+            right={-1}
+            top={-1}
+            onClick={onCloseAlert}
+          />
+        </Alert>
+      ) : txStatus.type === "Confirmed" && (
+        <Alert status="success">
+          <AlertIcon />
+          <Box>
+            <AlertTitle>Transaction confirmed !</AlertTitle>
+            <AlertDescription>
+              txId: {currentTxId}
+            </AlertDescription>
+          </Box>
+          <CloseButton
+            alignSelf='flex-start'
+            position='relative'
+            right={-1}
+            top={-1}
+            onClick={onCloseAlert}
+          />
+        </Alert>
+      ))}</Box>
     </Flex>
   );
 };
