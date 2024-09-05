@@ -91,7 +91,7 @@ export namespace PoolTypes {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<HexString>;
     };
-    getHasBeenWithdrawntoto: {
+    getHasBeenWithdrawn: {
       params: Omit<CallContractParams<{}>, "args">;
       result: CallContractResult<boolean>;
     };
@@ -158,7 +158,7 @@ export namespace PoolTypes {
       params: Omit<SignExecuteContractMethodParams<{}>, "args">;
       result: SignExecuteScriptTxResult;
     };
-    getHasBeenWithdrawntoto: {
+    getHasBeenWithdrawn: {
       params: Omit<SignExecuteContractMethodParams<{}>, "args">;
       result: SignExecuteScriptTxResult;
     };
@@ -315,7 +315,7 @@ class Factory extends ContractFactory<PoolInstance, PoolTypes.Fields> {
     > => {
       return testMethod(this, "getDescription", params, getContractByCodeHash);
     },
-    getHasBeenWithdrawntoto: async (
+    getHasBeenWithdrawn: async (
       params: Omit<
         TestContractParams<
           PoolTypes.Fields,
@@ -329,7 +329,7 @@ class Factory extends ContractFactory<PoolInstance, PoolTypes.Fields> {
     > => {
       return testMethod(
         this,
-        "getHasBeenWithdrawntoto",
+        "getHasBeenWithdrawn",
         params,
         getContractByCodeHash
       );
@@ -400,7 +400,7 @@ export const Pool = new Factory(
   Contract.fromJson(
     PoolContractJson,
     "=38-2+5c=2-2+90=1-3+220=359-1+5=203-1+c=40+7a7e0214696e73657274206174206d617020706174683a2000=159-1+8=178+7a7e021472656d6f7665206174206d617020706174683a2000=46",
-    "61ff9f7b27bbb999f79dccebc89ae6a012b3eaca5bb36e8539fdaa69ee535e42",
+    "dc8799055ea5d717e1d9d85424aa94ac760e7a18a4a3a230b6499ace4a0b9da7",
     []
   )
 );
@@ -540,13 +540,13 @@ export class PoolInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
-    getHasBeenWithdrawntoto: async (
-      params?: PoolTypes.CallMethodParams<"getHasBeenWithdrawntoto">
-    ): Promise<PoolTypes.CallMethodResult<"getHasBeenWithdrawntoto">> => {
+    getHasBeenWithdrawn: async (
+      params?: PoolTypes.CallMethodParams<"getHasBeenWithdrawn">
+    ): Promise<PoolTypes.CallMethodResult<"getHasBeenWithdrawn">> => {
       return callMethod(
         Pool,
         this,
-        "getHasBeenWithdrawntoto",
+        "getHasBeenWithdrawn",
         params === undefined ? {} : params,
         getContractByCodeHash
       );
@@ -633,12 +633,10 @@ export class PoolInstance extends ContractInstance {
     ): Promise<PoolTypes.SignExecuteMethodResult<"getDescription">> => {
       return signExecuteMethod(Pool, this, "getDescription", params);
     },
-    getHasBeenWithdrawntoto: async (
-      params: PoolTypes.SignExecuteMethodParams<"getHasBeenWithdrawntoto">
-    ): Promise<
-      PoolTypes.SignExecuteMethodResult<"getHasBeenWithdrawntoto">
-    > => {
-      return signExecuteMethod(Pool, this, "getHasBeenWithdrawntoto", params);
+    getHasBeenWithdrawn: async (
+      params: PoolTypes.SignExecuteMethodParams<"getHasBeenWithdrawn">
+    ): Promise<PoolTypes.SignExecuteMethodResult<"getHasBeenWithdrawn">> => {
+      return signExecuteMethod(Pool, this, "getHasBeenWithdrawn", params);
     },
     getCallerContribution: async (
       params: PoolTypes.SignExecuteMethodParams<"getCallerContribution">

@@ -52,7 +52,7 @@ Contract Pool(
         return description
     }
 
-    pub fn getHasBeenWithdrawntoto() -> Bool {
+    pub fn getHasBeenWithdrawn() -> Bool {
         return hasBeenWithdrawn
     }
 
