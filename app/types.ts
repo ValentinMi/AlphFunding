@@ -4,7 +4,7 @@ export type Contributor = {
 };
 
 export type PoolContract = {
-  id: number;
+  id: string;
   contractAddress: string;
   name: string;
 };

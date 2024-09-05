@@ -3,18 +3,18 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./pools.db"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 model Pool {
-  id              Int    @id @default(autoincrement())
+  id              String @id @default(auto()) @map("_id") @db.ObjectId
   contractAddress String
   name            String @default("Poolname")
 }
 
 model AlphPrice {
-  id         Int      @id @default(autoincrement())
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
   priceInUsd Float    @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
