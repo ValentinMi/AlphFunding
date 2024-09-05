@@ -21,14 +21,13 @@ export async function GET(request: NextRequest) {
   if (savedPrice) {
     await prisma.alphPrice.update({
       where: {
-        id: 1,
+        id: savedPrice.id
       },
       data: {
         priceInUsd: price,
       },
     });
   } else {
-    console.log("create");
     await prisma.alphPrice.create({
       data: {
         priceInUsd: price,
