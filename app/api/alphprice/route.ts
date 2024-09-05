@@ -44,7 +44,7 @@ async function fetchAlphPrice(): Promise<number> {
     {
       headers: {
         "Content-Type": "application/json",
-        "x-cg-demo-api-key": "CG-fBee4hZPpGAAD5hn3MW5vaAk",
+        "x-cg-demo-api-key": process.env.COIN_GECKO_API_KEY || "",
       },
     },
   );
