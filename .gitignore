@@ -6,5 +6,4 @@ deployments/
 prisma/pools.db
 prisma/pools.db-journal
 TODOS.md
-artifacts/
 .project.json
